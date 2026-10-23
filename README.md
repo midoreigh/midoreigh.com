@@ -25,13 +25,18 @@ Your essay…
 
 The filename becomes the URL: `src/content/blog/my-essay.md` → `/blog/my-essay`.
 
+## Deploying
+
+Cloudflare Workers Builds watches this repo: every push to `main` runs `npm run build` and `npx wrangler deploy`. Push a new post and it's live in a minute or two.
+
 ## Commands
 
 | Command | Does |
 | --- | --- |
 | `npm run dev` | Local dev server at http://localhost:4321 |
 | `npm run build` | Build static site into `dist/` |
-| `npm run deploy` | Build and deploy to Cloudflare |
+| `npm run deploy` | Build and deploy to Cloudflare by hand (pushes to `main` deploy automatically) |
+| `npm run deploy:www` | Deploy the tiny Worker that redirects www.midoreigh.com to midoreigh.com |
 | `npm run og` | Regenerate the social share image `public/og.png` |
 
 ## SEO and AI-friendliness
