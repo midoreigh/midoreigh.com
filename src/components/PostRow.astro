@@ -1,12 +1,13 @@
 ---
 // One entry in a magazine-style "contents" list.
 import { Image } from 'astro:assets';
+import Jaali from './Jaali.astro';
 import { CATEGORIES, formatDate, readingTime, type Post } from '../lib/site';
 interface Props { post: Post; n: number }
 const { post, n } = Astro.props;
 const cat = CATEGORIES[post.data.category];
 ---
-<li class:list={['row', { 'has-thumb': post.data.cover }]} data-reveal style={`--d:${n % 6}`}>
+<li class:list={['row', { 'has-thumb': post.data.cover }]} data-reveal data-jaali-host style={`--d:${n % 6}`}>
   <span class="num">{String(n + 1).padStart(2, '0')}</span>
   <div class="main">
     <p class="kicker">{cat.name}{post.data.lang !== 'en' && <span class="lang"> · {post.data.lang.toUpperCase()}</span>}</p>
@@ -14,7 +15,9 @@ const cat = CATEGORIES[post.data.category];
     <p class="desc" lang={post.data.lang}>{post.data.description}</p>
   </div>
   {post.data.cover && (
-    <Image class="thumb" src={post.data.cover} alt="" width={240} height={320} fit="cover" loading="lazy" />
+    <Jaali mode="hover" tile={22} closed={0.9} class="thumb">
+      <Image class="thumb-img" src={post.data.cover} alt="" width={240} height={320} fit="cover" loading="lazy" />
+    </Jaali>
   )}
   <p class="meta">
     <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
@@ -41,11 +44,11 @@ const cat = CATEGORIES[post.data.category];
   .desc { margin: .7rem 0 0; color: var(--ink-2); max-width: 60ch; }
   .meta { margin: .3rem 0 0; display: grid; gap: .2rem; text-align: right; font-family: var(--font-ui); font-size: .8rem; color: var(--ink-3); letter-spacing: .04em; }
   .row.has-thumb { grid-template-columns: 5rem 1fr 7.5rem 10rem; }
-  .thumb { width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 999px 999px 0 0; transition: transform .8s var(--ease); }
-  .row:hover .thumb { transform: translateY(-6px); }
+  .row :global(.thumb) { aspect-ratio: 3 / 4; }
+  .thumb-img { display: block; width: 100%; height: 100%; object-fit: cover; }
   @media (max-width: 760px) {
     .row, .row.has-thumb { grid-template-columns: 3rem 1fr; gap: 1rem; }
-    .thumb { display: none; }
+    .row :global(.thumb) { display: none; }
     .num { font-size: 1.6rem; }
     .meta { grid-column: 2; text-align: left; display: flex; gap: 1rem; }
   }

@@ -1,0 +1,132 @@
+---
+// A pierced-stone screen (jaali) laid over whatever is slotted in. Its star-shaped
+// holes grow until the content underneath is fully revealed.
+//   mode="scrub"  holes open and close with scroll position
+//   mode="enter"  holes open once when the element comes into view
+//   mode="hover"  holes open on hover (falls back to "scrub" on touch screens)
+interface Props {
+  mode?: 'scrub' | 'enter' | 'hover';
+  /** Lattice cell size in px. */
+  tile?: number;
+  /** Hole scale while closed: ~0.3 is almost shut, ~1 shows the lattice clearly. */
+  closed?: number;
+  /** Stone colour; defaults to the page background so the screen reads as cut from the page. */
+  stone?: string;
+  class?: string;
+  style?: string;
+}
+const { mode = 'enter', tile = 44, closed = 0.35, stone = 'var(--bg)', class: cls = '', style } = Astro.props;
+
+const id = `jaali-${Math.random().toString(36).slice(2, 9)}`;
+const c = tile / 2;
+// Eight-point star centred on the origin; outer radius = half a cell.
+const star = (() => {
+  const pts: string[] = [];
+  for (let i = 0; i < 16; i++) {
+    const a = ((i * 22.5 - 90) * Math.PI) / 180;
+    const r = i % 2 ? c * 0.62 : c;
+    pts.push(`${(r * Math.cos(a)).toFixed(2)},${(r * Math.sin(a)).toFixed(2)}`);
+  }
+  return `M${pts.join(' L')}Z`;
+})();
+const hole = `translate(${c} ${c}) scale(${closed})`;
+---
+<div class:list={['jaali', cls]} data-jaali={mode} data-closed={closed} data-tile={tile} style={style}>
+  <slot />
+  <svg class="screen" aria-hidden="true" style={`--stone:${stone}`}>
+    <defs>
+      <pattern id={`${id}-cut`} width={tile} height={tile} patternUnits="userSpaceOnUse">
+        <path data-hole d={star} transform={hole} fill="black" />
+      </pattern>
+      <pattern id={`${id}-rim`} width={tile} height={tile} patternUnits="userSpaceOnUse">
+        <path data-hole d={star} transform={hole} class="rim" />
+      </pattern>
+      <mask id={`${id}-mask`}>
+        <rect width="100%" height="100%" fill="white" />
+        <rect width="100%" height="100%" fill={`url(#${id}-cut)`} />
+      </mask>
+    </defs>
+    <rect class="stone" width="100%" height="100%" mask={`url(#${id}-mask)`} />
+    <rect width="100%" height="100%" fill={`url(#${id}-rim)`} />
+  </svg>
+</div>
+
+<script>
+  // Hole scale at which neighbouring stars overlap and the screen disappears.
+  const OPEN = 2.5;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canHover = matchMedia('(hover: hover)').matches;
+  const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
+  const smooth = (t: number) => t * t * (3 - 2 * t);
+
+  type J = { el: HTMLElement; holes: SVGPathElement[]; closed: number; c: number; p: number; ease: (t: number) => number; raf?: number };
+  const all: J[] = [...document.querySelectorAll<HTMLElement>('[data-jaali]')].map((el) => ({
+    el,
+    holes: [...el.querySelectorAll<SVGPathElement>('[data-hole]')],
+    closed: Number(el.dataset.closed),
+    c: Number(el.dataset.tile) / 2,
+    p: 0,
+    ease: easeOut,
+  }));
+
+  // p: 0 = closed, 1 = fully open (screen hidden)
+  function set(j: J, p: number) {
+    j.p = p;
+    const s = j.closed + (OPEN - j.closed) * j.ease(p);
+    for (const h of j.holes) h.setAttribute('transform', `translate(${j.c} ${j.c}) scale(${s.toFixed(3)})`);
+    j.el.classList.toggle('is-open', p >= 1);
+  }
+  function tween(j: J, to: number, ms: number) {
+    if (j.raf) cancelAnimationFrame(j.raf);
+    const from = j.p, t0 = performance.now();
+    const step = (t: number) => {
+      const k = Math.min(1, (t - t0) / ms);
+      set(j, from + (to - from) * k);
+      if (k < 1) j.raf = requestAnimationFrame(step);
+    };
+    j.raf = requestAnimationFrame(step);
+  }
+
+  const scrubbers: J[] = [];
+  for (const j of all) {
+    const mode = j.el.dataset.jaali === 'hover' && !canHover ? 'scrub' : j.el.dataset.jaali;
+    if (reduce) { set(j, mode === 'hover' ? 0 : 1); continue; }
+    if (mode === 'enter') {
+      const io = new IntersectionObserver(([e]) => {
+        if (e.isIntersecting) { tween(j, 1, 1800); io.disconnect(); }
+      }, { threshold: 0.25 });
+      io.observe(j.el);
+    } else if (mode === 'hover') {
+      const host = j.el.closest('[data-jaali-host]') ?? j.el;
+      host.addEventListener('pointerenter', () => tween(j, 1, 900));
+      host.addEventListener('pointerleave', () => tween(j, 0, 700));
+    } else {
+      j.ease = smooth;
+      scrubbers.push(j);
+    }
+  }
+
+  if (scrubbers.length) {
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const vh = innerHeight;
+      for (const j of scrubbers) {
+        const r = j.el.getBoundingClientRect();
+        // Starts opening as the top enters the viewport; fully open once the top is near the top of the screen.
+        set(j, Math.min(1, Math.max(0, (vh - r.top) / (vh * 0.85))));
+      }
+    };
+    addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    addEventListener('resize', update);
+    update();
+  }
+</script>
+
+<style>
+  .jaali { position: relative; overflow: hidden; isolation: isolate; }
+  .screen { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+  .stone { fill: var(--stone); }
+  .rim { fill: none; stroke: var(--gold); stroke-opacity: .55; stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .is-open .screen, :global(.no-js) .screen { display: none; }
+</style>

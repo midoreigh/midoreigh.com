@@ -3,6 +3,7 @@ import { render } from 'astro:content';
 import { Image, getImage } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import Emblem from '../../components/Emblem.astro';
+import Jaali from '../../components/Jaali.astro';
 import PostRow from '../../components/PostRow.astro';
 import { SITE, CATEGORIES, LANGUAGES, getPosts, formatDate, readingTime } from '../../lib/site';
 
@@ -88,15 +89,16 @@ const jsonLd = [
         </p>
       </div>
       {!cover && (
-        <div class="head-art" data-reveal="mask" style="--d:2" aria-hidden="true">
-          <span class="arch-line"></span>
-          <Emblem kind={post.data.category} class="head-emblem" />
-        </div>
+        <Jaali mode="enter" tile={30} class="head-art">
+          <div class="panel" aria-hidden="true"><Emblem kind={post.data.category} class="head-emblem" /></div>
+        </Jaali>
       )}
     </header>
     {cover && (
-      <figure class="wrap cover" data-reveal="mask" style="--d:2">
-        <Image src={cover} alt={coverAlt ?? ''} widths={[640, 960, 1280, 1600]} sizes="(max-width: 1240px) 100vw, 1240px" loading="eager" fetchpriority="high" />
+      <figure class="wrap cover">
+        <Jaali mode="enter" tile={48}>
+          <Image src={cover} alt={coverAlt ?? ''} widths={[640, 960, 1280, 1600]} sizes="(max-width: 1240px) 100vw, 1240px" loading="eager" fetchpriority="high" />
+        </Jaali>
       </figure>
     )}
 
@@ -149,11 +151,11 @@ const jsonLd = [
   .post-head .dek { font-size: clamp(1.2rem, 2vw, 1.55rem); max-width: 46ch; margin: 0 0 2rem; }
   .meta { display: flex; flex-wrap: wrap; gap: .4rem 1.6rem; margin: 0; font-family: var(--font-ui); font-size: .82rem; color: var(--ink-3); letter-spacing: .04em; }
   .meta a { color: var(--ink); }
-  .head-art { position: relative; aspect-ratio: 3 / 4; background: var(--c); color: var(--gilt); border-radius: 999px 999px 0 0; display: grid; place-items: center; }
-  .head-art .arch-line { position: absolute; inset: 10px; border: 1px solid var(--gilt-soft); border-bottom: 0; border-radius: 999px 999px 0 0; }
-  .head-art :global(.head-emblem) { width: 58%; }
+  .post-head :global(.head-art) { aspect-ratio: 3 / 4; }
+  .panel { position: absolute; inset: 0; display: grid; place-items: center; background: var(--c); color: var(--gilt); }
+  .panel :global(.head-emblem) { width: 58%; }
   :lang(ml) h1, :lang(ta) h1, :lang(hi) h1 { line-height: 1.25; letter-spacing: 0; font-size: clamp(2.2rem, 5vw, 4.2rem); }
-  @media (max-width: 760px) { .post-head { grid-template-columns: 1fr; } .head-art { display: none; } }
+  @media (max-width: 760px) { .post-head { grid-template-columns: 1fr; } .post-head :global(.head-art) { display: none; } }
   .post-head.has-cover { grid-template-columns: 1fr; border-bottom: 0; padding-bottom: 2.5rem; }
   .cover { margin-block: 0; padding: 0; }
   .cover :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 2px; }

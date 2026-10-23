@@ -4,6 +4,7 @@ import Yantra from '../components/Yantra.astro';
 import Emblem from '../components/Emblem.astro';
 import PostRow from '../components/PostRow.astro';
 import { Image } from 'astro:assets';
+import Jaali from '../components/Jaali.astro';
 import { SITE, CATEGORIES, getPosts, readingTime, formatDate } from '../lib/site';
 
 const posts = await getPosts();
@@ -76,15 +77,14 @@ const jsonLd = [
 
   {featured && (
     <section class="wrap cover" aria-labelledby="cover-title">
-      <a class="cover-art" href={`/blog/${featured.id}`} tabindex="-1" aria-hidden="true" style={`--c:${CATEGORIES[featured.data.category].color}`} data-reveal="mask">
-        <div class="arch" data-parallax="-0.06">
+      <a class="cover-art" href={`/blog/${featured.id}`} tabindex="-1" aria-hidden="true" style={`--c:${CATEGORIES[featured.data.category].color}`}>
+        <Jaali mode="scrub" tile={56} class="cover-jaali">
           {featured.data.cover ? (
-            <Image class="arch-img" src={featured.data.cover} alt="" widths={[480, 800]} sizes="(max-width: 820px) 340px, 40vw" loading="eager" />
+            <Image class="fill-img" src={featured.data.cover} alt="" widths={[480, 800]} sizes="(max-width: 820px) 100vw, 40vw" loading="eager" />
           ) : (
-            <Emblem kind={featured.data.category} class="cover-emblem" />
+            <div class="panel"><Emblem kind={featured.data.category} class="cover-emblem" /></div>
           )}
-          <span class="arch-line"></span>
-        </div>
+        </Jaali>
       </a>
       <div class="cover-copy">
         <p class="kicker" data-reveal>Cover story · {CATEGORIES[featured.data.category].name}</p>
@@ -121,13 +121,12 @@ const jsonLd = [
           <h2 id="sections-title" class="display h-section" data-reveal style="--d:1">What I <em>write about</em></h2>
         </div>
       </div>
-      <div class="arches">
+      <div class="sec-grid">
         {sections.map((s, i) => (
-          <a class="sec" href={`/blog/category/${s.key}`} style={`--c:${s.color}; --d:${i}`} data-reveal>
-            <div class="sec-arch" data-parallax={String(0.04 * (i - 1))}>
-              <span class="arch-line"></span>
-              <Emblem kind={s.key} class="sec-emblem" />
-            </div>
+          <a class="sec" href={`/blog/category/${s.key}`} style={`--c:${s.color}; --d:${i}`} data-reveal data-jaali-host>
+            <Jaali mode="hover" tile={34} closed={0.95} class="sec-jaali">
+              <div class="panel"><Emblem kind={s.key} class="sec-emblem" /></div>
+            </Jaali>
             <p class="sec-num">0{i + 1}</p>
             <h3 class="display">{s.name}</h3>
             <p class="sec-blurb">{s.blurb}</p>
@@ -239,15 +238,11 @@ const jsonLd = [
   /* ---------- COVER STORY ---------- */
   .cover { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: clamp(2rem, 6vw, 6rem); align-items: center; padding-top: 8rem; }
   .cover-art { display: block; }
-  .arch, .sec-arch {
-    position: relative; aspect-ratio: 4 / 5; background: var(--c); color: var(--gilt);
-    border-radius: 999px 999px 0 0; display: grid; place-items: center; overflow: hidden;
-  }
-  .arch-line { position: absolute; inset: 14px; border: 1px solid var(--gilt-soft); border-radius: 999px 999px 0 0; border-bottom: 0; }
-  .arch :global(.arch-img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: scale 1.2s var(--ease); }
-  .cover-art:hover :global(.arch-img) { scale: 1.04; }
-  .arch-line { z-index: 1; }
-  .arch :global(.cover-emblem) { width: 62%; transition: scale 1.2s var(--ease); }
+  .cover-art :global(.cover-jaali) { aspect-ratio: 4 / 5; background: var(--c); }
+  .cover-art :global(.fill-img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: scale 1.2s var(--ease); }
+  .cover-art:hover :global(.fill-img) { scale: 1.04; }
+  .panel { position: absolute; inset: 0; display: grid; place-items: center; background: var(--c); color: var(--gilt); }
+  .panel :global(.cover-emblem) { width: 62%; transition: scale 1.2s var(--ease); }
   .cover-art:hover :global(.cover-emblem) { scale: 1.06; }
   .cover-art:hover :global(.spin) { rotate: 45deg; }
   .cover-title { font-size: clamp(2.6rem, 5.6vw, 5rem); margin: .8rem 0 1.2rem; }
@@ -255,7 +250,7 @@ const jsonLd = [
   .cover-title a:hover { background-size: 100% 1px; }
   .cover-dek { font-size: 1.35rem; margin: 0 0 1.6rem; max-width: 42ch; }
   .byline { font-family: var(--font-ui); font-size: .82rem; color: var(--ink-3); letter-spacing: .04em; margin: 0 0 2.2rem; }
-  @media (max-width: 820px) { .cover { grid-template-columns: 1fr; padding-top: 5rem; } .cover-art { max-width: 340px; } }
+  @media (max-width: 820px) { .cover { grid-template-columns: 1fr; padding-top: 5rem; } }
 
   /* ---------- CONTENTS ---------- */
   .contents { padding-top: 9rem; }
@@ -264,17 +259,17 @@ const jsonLd = [
 
   /* ---------- SECTIONS ---------- */
   .sections { padding-top: 9rem; }
-  .arches { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1.2rem, 3vw, 3rem); }
+  .sec-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1.2rem, 3vw, 3rem); }
   .sec { text-decoration: none; display: flex; flex-direction: column; }
-  .sec-arch { aspect-ratio: 3 / 4; }
-  .sec-arch :global(.sec-emblem) { width: 56%; transition: scale 1.2s var(--ease); }
+  .sec :global(.sec-jaali) { aspect-ratio: 1; }
+  .sec :global(.sec-emblem) { width: 52%; transition: scale 1.2s var(--ease); }
   .sec:hover :global(.sec-emblem) { scale: 1.08; }
   .sec:hover :global(.spin) { rotate: 45deg; }
   .sec-num { font-family: var(--font-ui); font-size: .75rem; letter-spacing: .2em; color: var(--gold); margin: 1.6rem 0 .3rem; }
   .sec h3 { font-size: clamp(2rem, 3.4vw, 3rem); margin: 0; }
   .sec-blurb { color: var(--ink-2); margin: .6rem 0 1.2rem; }
   .sec-count { margin-top: auto; font-family: var(--font-ui); font-size: .76rem; letter-spacing: .16em; text-transform: uppercase; }
-  @media (max-width: 820px) { .arches { grid-template-columns: 1fr; max-width: 420px; } }
+  @media (max-width: 820px) { .sec-grid { grid-template-columns: 1fr; } .sec :global(.sec-jaali) { aspect-ratio: 16 / 9; } }
 
   /* ---------- MOTTO ---------- */
   .motto { margin-top: 9rem; background: var(--emerald-deep); color: var(--cream); padding: 6rem 0; }

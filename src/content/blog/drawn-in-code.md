@@ -1,6 +1,6 @@
 ---
 title: 'How Every Ornament on This Site Is Drawn in Code'
-description: 'No image files, no icon fonts: a short tour of the yantra, the arches and the emblems, and the few lines of geometry behind them.'
+description: 'No image files, no icon fonts: a short tour of the yantra, the jaali screens and the emblems, and the few lines of geometry behind them.'
 pubDate: 2026-10-16
 category: tech
 tags: ['svg', 'design', 'web', 'meta']
@@ -38,6 +38,10 @@ Rotate it sixteen times around the centre and you have a lotus. Change three num
 ## Drawing it in
 
 Each path is given `pathLength="1"`, which lets CSS treat every line as exactly one unit long, whatever its real length. Animate `stroke-dashoffset` from 1 to 0 and the line appears to be drawn by an invisible pen. Stagger the delays and the whole figure blooms from the outside in.
+
+## The jaali screen
+
+Images and emblems on this site are revealed through a *jaali* — the pierced stone screens of Mughal and Rajput architecture. It's a single SVG laid over the picture: a rectangle the colour of the page, with eight-point stars cut out of it by a repeating pattern. Scaling one star inside that pattern scales every hole at once, so a few lines of JavaScript can open the whole screen as you scroll or hover until the stars overlap and the stone disappears.
 
 ## Why bother?
 

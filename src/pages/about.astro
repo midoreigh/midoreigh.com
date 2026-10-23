@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Yantra from '../components/Yantra.astro';
 import Emblem from '../components/Emblem.astro';
+import Jaali from '../components/Jaali.astro';
 import { SITE, LANGUAGES } from '../lib/site';
 
 const jsonLd = [
@@ -27,10 +28,9 @@ const convictions = [
         like rivers at a confluence. Some pieces are long essays; some are notes in the margin.
       </p>
     </div>
-    <div class="portrait" data-reveal="mask" style="--d:2" aria-hidden="true">
-      <span class="arch-line"></span>
-      <Yantra class="p-yantra" />
-    </div>
+    <Jaali mode="enter" tile={40} class="portrait">
+      <div class="panel" aria-hidden="true"><Yantra class="p-yantra" /></div>
+    </Jaali>
   </section>
 
   <section class="narrow copy">
@@ -80,10 +80,10 @@ const convictions = [
   h1 { font-size: clamp(3.2rem, 8.5vw, 7.5rem); margin: .5rem 0 1.6rem; letter-spacing: -.04em; }
   h1 em { color: var(--gold); }
   .lede { font-size: clamp(1.2rem, 2vw, 1.5rem); max-width: 40ch; color: var(--ink-2); margin: 0; }
-  .portrait { position: relative; aspect-ratio: 3 / 4; background: var(--maroon); border-radius: 999px 999px 0 0; display: grid; place-items: center; overflow: hidden; }
-  .portrait .arch-line { position: absolute; inset: 14px; border: 1px solid var(--gilt-soft); border-bottom: 0; border-radius: 999px 999px 0 0; }
-  .portrait :global(.p-yantra) { width: 140%; max-width: none; }
-  @media (max-width: 760px) { .intro { grid-template-columns: 1fr; } .portrait { max-width: 300px; } }
+  .intro :global(.portrait) { aspect-ratio: 3 / 4; }
+  .panel { position: absolute; inset: 0; display: grid; place-items: center; background: var(--maroon); overflow: hidden; }
+  .panel :global(.p-yantra) { width: 140%; max-width: none; }
+  @media (max-width: 760px) { .intro { grid-template-columns: 1fr; } .intro :global(.portrait) { aspect-ratio: 16 / 10; } }
 
   .copy { padding-top: 5rem; font-size: 1.25rem; line-height: 1.72; }
   .copy h2 { font-size: clamp(2rem, 4vw, 2.8rem); margin: 2.5rem 0 1rem; }
