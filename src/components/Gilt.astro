@@ -1,20 +1,38 @@
 ---
 // Gilt miniature frame: a double gold rule with small corner lozenges around the
 // slotted picture, like the border of a Mughal miniature. When it first comes into
-// view the picture settles in and a soft gold sheen passes over it once.
-// Size it from outside (width / aspect-ratio on `class`); --gilt-pad sets the margin and
-// --gilt-hover the duration of any `scale` hover effect a parent applies to the picture.
-interface Props { class?: string; style?: string }
-const { class: cls = '', style } = Astro.props;
+// view the picture fades in and a soft gold sheen passes over it once.
+//
+// With `float`, the frame sits on a mat and hovers slightly above the page: it drifts
+// gently at rest, and on hover (desktop) lifts, tilts toward the cursor and a gold glint
+// follows the cursor across it, like light on foil.
+//
+// Sizing comes from outside (width / aspect-ratio via `class`). Custom properties:
+//   --gilt-pad     margin between frame and picture
+//   --sweep-delay / --sweep-dur / --sweep-ease   timing of the arrival sheen
+//   --gx           glint position (0–100%); a parent can animate it, it is a registered property
+// A parent marked [data-gilt-host] can act as the hover area (e.g. a whole card link).
+interface Props {
+  class?: string;
+  style?: string;
+  float?: boolean;
+  /** Maximum tilt in degrees for `float`. */
+  tilt?: number;
+}
+const { class: cls = '', style, float = false, tilt = 7 } = Astro.props;
 ---
-<div class:list={['gilt', cls]} style={style} data-gilt>
+<div class:list={['gilt', cls, { float }]} style={style} data-gilt data-tilt={float ? tilt : undefined}>
   <i class="lz tl"></i><i class="lz tr"></i><i class="lz bl"></i><i class="lz br"></i>
-  <div class="pic"><slot /></div>
+  <div class="pic"><slot /><span class="glint" aria-hidden="true"></span></div>
 </div>
 
 <script>
-  const els = document.querySelectorAll<HTMLElement>('[data-gilt]');
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const els = [...document.querySelectorAll<HTMLElement>('[data-gilt]')];
+
+  // Arrival: fade the picture in and run the sheen once.
+  if (reduce) {
     els.forEach((el) => el.classList.add('is-in'));
   } else {
     const io = new IntersectionObserver((entries) => {
@@ -22,28 +40,94 @@ const { class: cls = '', style } = Astro.props;
     }, { threshold: 0.3 });
     els.forEach((el) => io.observe(el));
   }
+
+  // Hover: lift, tilt toward the cursor and move the glint with it. A frame loop eases
+  // toward the pointer so the motion stays fluid between pointer events.
+  if (fine && !reduce) {
+    for (const el of els) {
+      if (!el.dataset.tilt) continue;
+      const max = Number(el.dataset.tilt);
+      const host = el.closest<HTMLElement>('[data-gilt-host]') ?? el;
+      const cur = { rx: 0, ry: 0, lift: 0, gx: 50 };
+      const tgt = { ...cur };
+      let raf = 0;
+      const frame = () => {
+        let moving = false;
+        for (const k of ['rx', 'ry', 'lift', 'gx'] as const) {
+          const d = tgt[k] - cur[k];
+          if (Math.abs(d) > 0.01) { cur[k] += d * 0.12; moving = true; } else cur[k] = tgt[k];
+        }
+        el.style.setProperty('--rx', `${cur.rx.toFixed(2)}deg`);
+        el.style.setProperty('--ry', `${cur.ry.toFixed(2)}deg`);
+        el.style.setProperty('--lift', `${cur.lift.toFixed(2)}px`);
+        el.style.setProperty('--gx', `${cur.gx.toFixed(1)}%`);
+        raf = moving ? requestAnimationFrame(frame) : 0;
+      };
+      const kick = () => { if (!raf) raf = requestAnimationFrame(frame); };
+      host.addEventListener('pointerenter', () => { el.classList.add('is-lifted'); tgt.lift = -8; kick(); });
+      host.addEventListener('pointermove', (e) => {
+        const r = el.getBoundingClientRect();
+        const px = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+        const py = Math.min(1, Math.max(0, (e.clientY - r.top) / r.height));
+        tgt.ry = (px - 0.5) * 2 * max;
+        tgt.rx = (0.5 - py) * 2 * max;
+        tgt.gx = px * 100;
+        kick();
+      });
+      host.addEventListener('pointerleave', () => {
+        el.classList.remove('is-lifted');
+        Object.assign(tgt, { rx: 0, ry: 0, lift: 0, gx: tgt.gx });
+        kick();
+      });
+    }
+  }
 </script>
 
 <style>
-  .gilt { --gilt-pad: 12px; position: relative; padding: var(--gilt-pad); }
+  .gilt {
+    --gilt-pad: 12px;
+    position: relative; padding: var(--gilt-pad);
+    transform: perspective(1100px) translateY(var(--lift, 0px)) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  }
   /* Outer rule and a fainter inner rule */
-  .gilt::before, .gilt::after { content: ''; position: absolute; pointer-events: none; border: 1px solid var(--gold); }
+  .gilt::before, .gilt::after { content: ''; position: absolute; pointer-events: none; border: 1px solid var(--gold); transition: opacity .6s var(--ease); }
   .gilt::before { inset: 0; opacity: .85; }
   .gilt::after { inset: calc(var(--gilt-pad) / 2 - 1px); opacity: .4; }
   .lz { position: absolute; z-index: 1; width: 6px; height: 6px; background: var(--gold); transform: rotate(45deg); }
   .tl { left: -3px; top: -3px; } .tr { right: -3px; top: -3px; } .bl { left: -3px; bottom: -3px; } .br { right: -3px; bottom: -3px; }
 
   .pic { position: relative; height: 100%; overflow: hidden; isolation: isolate; }
-  .pic > :global(*) {
-    opacity: 0; transform: scale(1.06);
-    transition: opacity 1.2s var(--ease), transform 1.6s var(--ease), scale var(--gilt-hover, .9s) var(--ease);
-  }
-  .is-in .pic > :global(*), :global(.no-js) .pic > :global(*) { opacity: 1; transform: none; }
-  /* One pass of gold light across the picture */
+  .pic > :global(*:not(.glint)) { opacity: 0; transition: opacity 1.2s var(--ease); }
+  .is-in .pic > :global(*:not(.glint)), :global(.no-js) .pic > :global(*:not(.glint)) { opacity: 1; }
+
+  /* Arrival: one pass of gold light across the picture */
   .pic::after {
     content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
     background: linear-gradient(105deg, transparent 35%, rgba(255, 233, 176, .38) 50%, transparent 65%);
     transform: translateX(-120%);
   }
-  .is-in .pic::after { transform: translateX(120%); transition: transform 1.8s var(--ease) .35s; }
+  .is-in .pic::after {
+    transform: translateX(120%);
+    transition: transform var(--sweep-dur, 1.8s) var(--sweep-ease, var(--ease)) var(--sweep-delay, .35s);
+  }
+
+  /* Hover glint, positioned by --gx */
+  .glint {
+    position: absolute; inset: 0; z-index: 3; pointer-events: none; opacity: 0; mix-blend-mode: overlay;
+    background: linear-gradient(105deg,
+      transparent calc(var(--gx) - 26%),
+      rgba(255, 236, 190, .45) calc(var(--gx) - 6%),
+      rgba(255, 246, 220, .75) var(--gx),
+      rgba(255, 236, 190, .45) calc(var(--gx) + 6%),
+      transparent calc(var(--gx) + 26%));
+    transition: opacity .6s var(--ease);
+  }
+
+  /* Floating: a mat, a soft shadow and a slow drift */
+  .float { background: var(--surface); box-shadow: var(--float-rest); transition: box-shadow .9s var(--ease); animation: drift 7s ease-in-out infinite alternate; animation-delay: calc(var(--i, 0) * -2.4s); }
+  .float.is-lifted { box-shadow: var(--float-lift); }
+  .float.is-lifted::before { opacity: 1; }
+  .is-lifted .glint { opacity: 1; }
+  @keyframes drift { from { translate: 0 0; } to { translate: 0 -4px; } }
+  @media (prefers-reduced-motion: reduce) { .float { animation: none; } }
 </style>

@@ -89,14 +89,14 @@ const jsonLd = [
         </p>
       </div>
       {!cover && (
-        <Gilt class="head-art">
+        <Gilt class="head-art" float>
           <div class="panel" aria-hidden="true"><Emblem kind={post.data.category} class="head-emblem" /></div>
         </Gilt>
       )}
     </header>
     {cover && (
       <figure class="wrap cover">
-        <Gilt>
+        <Gilt float tilt={2}>
           <Image src={cover} alt={coverAlt ?? ''} widths={[640, 960, 1280, 1600]} sizes="(max-width: 1240px) 100vw, 1240px" loading="eager" fetchpriority="high" />
         </Gilt>
       </figure>

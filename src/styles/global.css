@@ -24,6 +24,8 @@
   --emerald: #0F5A47;
   --gold: #8E6D28;
   --saffron: #A8501A;
+  --float-rest: 0 18px 34px -22px rgba(70, 30, 15, .38), 0 3px 8px -4px rgba(70, 30, 15, .18);
+  --float-lift: 0 40px 64px -30px rgba(70, 30, 15, .48), 0 12px 22px -12px rgba(70, 30, 15, .22);
 
   --font-display: 'Fraunces', 'Noto Serif Malayalam', 'Noto Serif Devanagari', 'Noto Serif Tamil', Georgia, serif;
   --font-body: 'Newsreader', 'Noto Serif Malayalam', 'Noto Serif Devanagari', 'Noto Serif Tamil', Georgia, serif;
@@ -52,6 +54,8 @@
     --saffron: #E38D52;
     color-scheme: dark;
     --luxe: 1;
+    --float-rest: 0 20px 40px -20px rgba(0, 0, 0, .75), 0 3px 10px -4px rgba(0, 0, 0, .5);
+    --float-lift: 0 44px 70px -28px rgba(0, 0, 0, .85), 0 14px 24px -12px rgba(0, 0, 0, .55);
   }
 }
 :root[data-theme='dark'] {
@@ -69,8 +73,13 @@
   --saffron: #E38D52;
   color-scheme: dark;
   --luxe: 1;
+  --float-rest: 0 20px 40px -20px rgba(0, 0, 0, .75), 0 3px 10px -4px rgba(0, 0, 0, .5);
+  --float-lift: 0 44px 70px -28px rgba(0, 0, 0, .85), 0 14px 24px -12px rgba(0, 0, 0, .55);
 }
 :root[data-theme='light'] { color-scheme: light; }
+
+/* Registered so a hover can animate the gilt glint across a picture */
+@property --gx { syntax: '<percentage>'; inherits: true; initial-value: 50%; }
 
 *, *::before, *::after { box-sizing: border-box; }
 /* clip (not hidden) on html is what mobile browsers honour for stopping sideways scroll */
