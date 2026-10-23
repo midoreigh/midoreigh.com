@@ -4,7 +4,7 @@ import Yantra from '../components/Yantra.astro';
 import Emblem from '../components/Emblem.astro';
 import PostRow from '../components/PostRow.astro';
 import { Image } from 'astro:assets';
-import Jaali from '../components/Jaali.astro';
+import Gilt from '../components/Gilt.astro';
 import { SITE, CATEGORIES, getPosts, readingTime, formatDate } from '../lib/site';
 
 const posts = await getPosts();
@@ -78,13 +78,13 @@ const jsonLd = [
   {featured && (
     <section class="wrap cover" aria-labelledby="cover-title">
       <a class="cover-art" href={`/blog/${featured.id}`} tabindex="-1" aria-hidden="true" style={`--c:${CATEGORIES[featured.data.category].color}`}>
-        <Jaali mode="scrub" tile={56} class="cover-jaali">
+        <Gilt class="cover-gilt">
           {featured.data.cover ? (
             <Image class="fill-img" src={featured.data.cover} alt="" widths={[480, 800]} sizes="(max-width: 820px) 100vw, 40vw" loading="eager" />
           ) : (
             <div class="panel"><Emblem kind={featured.data.category} class="cover-emblem" /></div>
           )}
-        </Jaali>
+        </Gilt>
       </a>
       <div class="cover-copy">
         <p class="kicker" data-reveal>Cover story · {CATEGORIES[featured.data.category].name}</p>
@@ -123,10 +123,13 @@ const jsonLd = [
       </div>
       <div class="sec-grid">
         {sections.map((s, i) => (
-          <a class="sec" href={`/blog/category/${s.key}`} style={`--c:${s.color}; --d:${i}`} data-reveal data-jaali-host>
-            <Jaali mode="hover" tile={34} closed={0.95} class="sec-jaali">
-              <div class="panel"><Emblem kind={s.key} class="sec-emblem" /></div>
-            </Jaali>
+          <a class="sec" href={`/blog/category/${s.key}`} style={`--c:${s.color}; --d:${i}`} data-reveal data-sec>
+            <Gilt class="sec-gilt">
+              <div class="panel">
+                <span class="sec-frame" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+                <Emblem kind={s.key} class="sec-emblem" />
+              </div>
+            </Gilt>
             <p class="sec-num">0{i + 1}</p>
             <h3 class="display">{s.name}</h3>
             <p class="sec-blurb">{s.blurb}</p>
@@ -166,6 +169,13 @@ const jsonLd = [
       const offset = r.top + r.height / 2 - vh / 2;
       el.style.translate = `0 ${(offset * Number(el.dataset.parallax)).toFixed(1)}px`;
     }
+  }
+  // Touch screens can't hover: draw each section card's frame once it passes the middle of the screen.
+  if (!matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) if (e.isIntersecting) { e.target.classList.add('is-drawn'); io.unobserve(e.target); }
+    }, { rootMargin: '0px 0px -50% 0px' });
+    document.querySelectorAll('[data-sec]').forEach((el) => io.observe(el));
   }
   if (!reduce) {
     addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
@@ -238,8 +248,8 @@ const jsonLd = [
   /* ---------- COVER STORY ---------- */
   .cover { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: clamp(2rem, 6vw, 6rem); align-items: center; padding-top: 8rem; }
   .cover-art { display: block; }
-  .cover-art :global(.cover-jaali) { aspect-ratio: 4 / 5; background: var(--c); }
-  .cover-art :global(.fill-img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: scale 1.2s var(--ease); }
+  .cover-art :global(.cover-gilt) { aspect-ratio: 4 / 5; }
+  .cover-art :global(.fill-img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .cover-art:hover :global(.fill-img) { scale: 1.04; }
   .panel { position: absolute; inset: 0; display: grid; place-items: center; background: var(--c); color: var(--gilt); }
   .panel :global(.cover-emblem) { width: 62%; transition: scale 1.2s var(--ease); }
@@ -261,15 +271,32 @@ const jsonLd = [
   .sections { padding-top: 9rem; }
   .sec-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1.2rem, 3vw, 3rem); }
   .sec { text-decoration: none; display: flex; flex-direction: column; }
-  .sec :global(.sec-jaali) { aspect-ratio: 1; }
-  .sec :global(.sec-emblem) { width: 52%; transition: scale 1.2s var(--ease); }
-  .sec:hover :global(.sec-emblem) { scale: 1.08; }
-  .sec:hover :global(.spin) { rotate: 45deg; }
+  .sec :global(.sec-gilt) { aspect-ratio: 1; --gilt-pad: 10px; }
+  /* Hover: the inner gold frame draws in from the corners while the emblem turns and grows.
+     Everything shares one duration and easing, so it also unwinds together. */
+  .sec { --dur: .9s; }
+  .sec-frame { position: absolute; inset: 14px; pointer-events: none; }
+  .sec-frame i { position: absolute; background: var(--gilt); transition: transform var(--dur) var(--ease); }
+  .sec-frame i:nth-child(1) { top: 0; left: 0; right: 0; height: 1px; transform: scaleX(0); transform-origin: left; }
+  .sec-frame i:nth-child(2) { top: 0; bottom: 0; right: 0; width: 1px; transform: scaleY(0); transform-origin: top; }
+  .sec-frame i:nth-child(3) { bottom: 0; left: 0; right: 0; height: 1px; transform: scaleX(0); transform-origin: right; }
+  .sec-frame i:nth-child(4) { top: 0; bottom: 0; left: 0; width: 1px; transform: scaleY(0); transform-origin: bottom; }
+  /* Sized by height so it fits both the square (desktop) and wide (mobile) card */
+  .sec :global(.sec-emblem) { width: auto; height: 54%; transition: scale var(--dur) var(--ease); }
+  .sec :global(.spin) { transition-duration: var(--dur); }
+  .sec.is-drawn .sec-frame i { transform: none; }
+  .sec.is-drawn :global(.sec-emblem) { scale: 1.08; }
+  .sec.is-drawn :global(.spin) { rotate: 45deg; }
+  @media (hover: hover) and (pointer: fine) {
+    .sec:hover .sec-frame i { transform: none; }
+    .sec:hover :global(.sec-emblem) { scale: 1.08; }
+    .sec:hover :global(.spin) { rotate: 45deg; }
+  }
   .sec-num { font-family: var(--font-ui); font-size: .75rem; letter-spacing: .2em; color: var(--gold); margin: 1.6rem 0 .3rem; }
   .sec h3 { font-size: clamp(2rem, 3.4vw, 3rem); margin: 0; }
   .sec-blurb { color: var(--ink-2); margin: .6rem 0 1.2rem; }
   .sec-count { margin-top: auto; font-family: var(--font-ui); font-size: .76rem; letter-spacing: .16em; text-transform: uppercase; }
-  @media (max-width: 820px) { .sec-grid { grid-template-columns: 1fr; } .sec :global(.sec-jaali) { aspect-ratio: 16 / 9; } }
+  @media (max-width: 820px) { .sec-grid { grid-template-columns: 1fr; } .sec :global(.sec-gilt) { aspect-ratio: 16 / 9; } }
 
   /* ---------- MOTTO ---------- */
   .motto { margin-top: 9rem; background: var(--emerald-deep); color: var(--cream); padding: 6rem 0; }

@@ -2,7 +2,7 @@
 
 Personal journal on geopolitics, technology and culture. Built with [Astro](https://astro.build), hosted on Cloudflare Workers (static assets, free plan).
 
-Design: modern "editorial luxe" Indian maximalism — oxblood, emerald and gold; Fraunces + Newsreader type; every ornament (yantra, jaali screens, emblems) is drawn in SVG code. Images and emblems are revealed through a pierced jaali screen (`src/components/Jaali.astro`) that opens on scroll, on arrival or on hover.
+Design: modern "editorial luxe" Indian maximalism — oxblood, emerald and gold; Fraunces + Newsreader type; every ornament (yantra, gilt frames, emblems) is drawn in SVG/CSS code. Pictures sit in a gilt miniature frame (`src/components/Gilt.astro`) that settles in with a gold sheen; dark mode adds a lacquer glow, faint brocade pattern and grain.
 
 ## Writing
 

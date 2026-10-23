@@ -3,7 +3,7 @@ import { render } from 'astro:content';
 import { Image, getImage } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import Emblem from '../../components/Emblem.astro';
-import Jaali from '../../components/Jaali.astro';
+import Gilt from '../../components/Gilt.astro';
 import PostRow from '../../components/PostRow.astro';
 import { SITE, CATEGORIES, LANGUAGES, getPosts, formatDate, readingTime } from '../../lib/site';
 
@@ -89,16 +89,16 @@ const jsonLd = [
         </p>
       </div>
       {!cover && (
-        <Jaali mode="enter" tile={30} class="head-art">
+        <Gilt class="head-art">
           <div class="panel" aria-hidden="true"><Emblem kind={post.data.category} class="head-emblem" /></div>
-        </Jaali>
+        </Gilt>
       )}
     </header>
     {cover && (
       <figure class="wrap cover">
-        <Jaali mode="enter" tile={48}>
+        <Gilt>
           <Image src={cover} alt={coverAlt ?? ''} widths={[640, 960, 1280, 1600]} sizes="(max-width: 1240px) 100vw, 1240px" loading="eager" fetchpriority="high" />
-        </Jaali>
+        </Gilt>
       </figure>
     )}
 

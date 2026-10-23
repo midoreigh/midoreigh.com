@@ -52,7 +52,8 @@ const links = [
 </script>
 
 <style>
-  .site-header { position: relative; z-index: 40; border-bottom: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+  /* Transparent so the dark-mode lacquer layer runs up behind it */
+  .site-header { position: relative; z-index: 40; border-bottom: 1px solid var(--line); background: transparent; color: var(--ink); }
   .site-header.tone-brand { background: var(--maroon-deep); color: var(--cream); border-color: var(--gilt-soft); }
   .nav { display: flex; align-items: center; gap: 1.6rem; height: 72px; }
   .brand { display: flex; align-items: center; gap: .7rem; text-decoration: none; font-family: var(--font-display); font-size: 1.55rem; font-weight: 400; letter-spacing: -.01em; font-variation-settings: 'opsz' 48; }

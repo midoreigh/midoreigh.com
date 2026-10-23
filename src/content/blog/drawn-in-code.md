@@ -1,6 +1,6 @@
 ---
 title: 'How Every Ornament on This Site Is Drawn in Code'
-description: 'No image files, no icon fonts: a short tour of the yantra, the jaali screens and the emblems, and the few lines of geometry behind them.'
+description: 'No image files, no icon fonts: a short tour of the yantra, the gilt frames and the emblems, and the few lines of geometry behind them.'
 pubDate: 2026-10-16
 category: tech
 tags: ['svg', 'design', 'web', 'meta']
@@ -39,9 +39,9 @@ Rotate it sixteen times around the centre and you have a lotus. Change three num
 
 Each path is given `pathLength="1"`, which lets CSS treat every line as exactly one unit long, whatever its real length. Animate `stroke-dashoffset` from 1 to 0 and the line appears to be drawn by an invisible pen. Stagger the delays and the whole figure blooms from the outside in.
 
-## The jaali screen
+## The gilt frame
 
-Images and emblems on this site are revealed through a *jaali* — the pierced stone screens of Mughal and Rajput architecture. It's a single SVG laid over the picture: a rectangle the colour of the page, with eight-point stars cut out of it by a repeating pattern. Scaling one star inside that pattern scales every hole at once, so a few lines of JavaScript can open the whole screen as you scroll or hover until the stars overlap and the stone disappears.
+Pictures on this site sit inside a frame borrowed from Mughal miniatures: a double gold rule with a small lozenge at each corner. It's four lines of CSS — two borders and four rotated squares — so it scales to any size and recolours itself for dark mode. When a picture first scrolls into view it settles into place and a single band of gold light passes across it, like light catching gold leaf.
 
 ## Why bother?
 
