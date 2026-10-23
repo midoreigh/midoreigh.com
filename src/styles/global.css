@@ -73,6 +73,9 @@
 *, *::before, *::after { box-sizing: border-box; }
 /* clip (not hidden) on html is what mobile browsers honour for stopping sideways scroll */
 html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+/* No blue tap flash on Android/Samsung browsers; keyboard focus still shows via :focus-visible */
+html { -webkit-tap-highlight-color: transparent; }
+button, summary, a { touch-action: manipulation; }
 body {
   margin: 0;
   font-family: var(--font-body);
