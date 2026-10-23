@@ -1,0 +1,44 @@
+---
+// One entry in a magazine-style "contents" list.
+import { CATEGORIES, formatDate, readingTime, type Post } from '../lib/site';
+interface Props { post: Post; n: number }
+const { post, n } = Astro.props;
+const cat = CATEGORIES[post.data.category];
+---
+<li class="row" data-reveal style={`--d:${n % 6}`}>
+  <span class="num">{String(n + 1).padStart(2, '0')}</span>
+  <div class="main">
+    <p class="kicker">{cat.name}{post.data.lang !== 'en' && <span class="lang"> · {post.data.lang.toUpperCase()}</span>}</p>
+    <h3 class="display" lang={post.data.lang}><a href={`/blog/${post.id}`}>{post.data.title}</a></h3>
+    <p class="desc" lang={post.data.lang}>{post.data.description}</p>
+  </div>
+  <p class="meta">
+    <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+    <span>{readingTime(post.body)} min</span>
+  </p>
+</li>
+
+<style>
+  .row {
+    position: relative; display: grid; grid-template-columns: 5rem 1fr 10rem; gap: 2rem; align-items: start;
+    padding: 2.2rem 0; border-top: 1px solid var(--line); isolation: isolate;
+  }
+  .row::before {
+    content: ''; position: absolute; inset: 0 -16px; z-index: -1; background: var(--surface);
+    transform: scaleY(0); transform-origin: bottom; transition: transform .6s var(--ease);
+  }
+  .row:hover::before { transform: none; }
+  .num { font-family: var(--font-display); font-size: 2.4rem; font-weight: 300; line-height: 1; color: var(--gold); font-variation-settings: 'opsz' 144; }
+  .kicker { margin: 0 0 .5rem; }
+  h3 { font-size: clamp(1.7rem, 3.4vw, 2.7rem); margin: 0; transition: transform .6s var(--ease); }
+  .row:hover h3 { transform: translateX(10px); }
+  h3 a { text-decoration: none; }
+  h3 a::after { content: ''; position: absolute; inset: 0; }
+  .desc { margin: .7rem 0 0; color: var(--ink-2); max-width: 60ch; }
+  .meta { margin: .3rem 0 0; display: grid; gap: .2rem; text-align: right; font-family: var(--font-ui); font-size: .8rem; color: var(--ink-3); letter-spacing: .04em; }
+  @media (max-width: 760px) {
+    .row { grid-template-columns: 3rem 1fr; gap: 1rem; }
+    .num { font-size: 1.6rem; }
+    .meta { grid-column: 2; text-align: left; display: flex; gap: 1rem; }
+  }
+</style>

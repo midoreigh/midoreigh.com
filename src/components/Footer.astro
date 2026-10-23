@@ -1,0 +1,48 @@
+---
+import { SITE, CATEGORIES } from '../lib/site';
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="wrap">
+    <p class="mast display" data-reveal="mask">mido<em>reigh</em></p>
+    <div class="cols">
+      <p class="about">{SITE.description}</p>
+      <nav aria-label="Sections">
+        <p class="kicker">Sections</p>
+        <ul>
+          {Object.entries(CATEGORIES).map(([k, c]) => <li><a href={`/blog/category/${k}`}>{c.name}</a></li>)}
+        </ul>
+      </nav>
+      <nav aria-label="Elsewhere">
+        <p class="kicker">Elsewhere</p>
+        <ul>
+          <li><a href="/about">About</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+          <li><a href="/llms.txt">llms.txt</a></li>
+          <li><a href={SITE.github} rel="me">GitHub</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="dots" aria-hidden="true"></div>
+    <div class="base">
+      <span>© {year} {SITE.author}</span>
+      <span class="welcome"><span lang="ml">സ്വാഗതം</span> · <span lang="hi">स्वागत</span> · <span lang="ta">வரவேற்பு</span></span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer { background: var(--maroon-deep); color: var(--cream); margin-top: 8rem; padding: 5rem 0 2rem; }
+  .mast { font-size: clamp(4rem, 17vw, 15rem); margin: 0 0 3rem; color: var(--cream); line-height: .85; }
+  .mast em { color: var(--gilt); }
+  .cols { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 3rem; padding-bottom: 3rem; }
+  .about { margin: 0; max-width: 44ch; color: rgba(243, 231, 211, .78); font-style: italic; }
+  .kicker { color: var(--gilt); margin: 0 0 1rem; }
+  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+  a { text-decoration: none; color: var(--cream); }
+  a:hover { color: var(--gilt); }
+  .dots { color: var(--gilt); }
+  .base { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-top: 1.4rem; font-family: var(--font-ui); font-size: .8rem; color: rgba(243, 231, 211, .6); letter-spacing: .04em; }
+  .welcome { color: var(--gilt); }
+  @media (max-width: 720px) { .cols { grid-template-columns: 1fr 1fr; } .about { grid-column: 1 / -1; } }
+</style>

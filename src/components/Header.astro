@@ -1,0 +1,63 @@
+---
+interface Props { tone?: 'paper' | 'brand' }
+const { tone = 'paper' } = Astro.props;
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const links = [
+  { href: '/blog', label: 'Journal' },
+  { href: '/blog/category/geopolitics', label: 'Geopolitics' },
+  { href: '/blog/category/tech', label: 'Tech' },
+  { href: '/blog/category/culture', label: 'Culture' },
+  { href: '/about', label: 'About' },
+];
+---
+<header class:list={['site-header', `tone-${tone}`]}>
+  <nav class="wrap nav" aria-label="Primary">
+    <a class="brand" href="/" aria-label="Midoreigh, home">
+      <svg viewBox="-12 -12 24 24" aria-hidden="true"><rect x="-8" y="-8" width="16" height="16" transform="rotate(45)" /><circle r="4.5" /><circle r="1.4" class="b" /></svg>
+      <span>mido<i>reigh</i></span>
+    </a>
+    <details class="menu">
+      <summary aria-label="Menu"><span></span><span></span></summary>
+      <ul>
+        {links.map((l) => (
+          <li><a href={l.href} aria-current={path === l.href ? 'page' : undefined}>{l.label}</a></li>
+        ))}
+      </ul>
+    </details>
+  </nav>
+</header>
+
+<style>
+  .site-header { position: relative; z-index: 40; border-bottom: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+  .site-header.tone-brand { background: var(--maroon-deep); color: var(--cream); border-color: var(--gilt-soft); }
+  .nav { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+  .brand { display: flex; align-items: center; gap: .7rem; text-decoration: none; font-family: var(--font-display); font-size: 1.55rem; font-weight: 400; letter-spacing: -.01em; font-variation-settings: 'opsz' 48; }
+  .brand i { font-weight: 300; }
+  .brand svg { width: 26px; height: 26px; transition: rotate 1s var(--ease); }
+  .brand svg :is(rect, circle) { fill: none; stroke: var(--gold); stroke-width: 1.2; }
+  .tone-brand .brand svg :is(rect, circle) { stroke: var(--gilt); }
+  .tone-brand .brand svg .b { fill: var(--gilt); }
+  .brand svg .b { fill: var(--gold); stroke: none; }
+  .brand:hover svg { rotate: 90deg; }
+  .menu summary { display: none; }
+  .menu ul { display: flex; gap: 2.2rem; list-style: none; margin: 0; padding: 0; }
+  .menu a {
+    font-family: var(--font-ui); font-size: .76rem; font-weight: 500; letter-spacing: .18em; text-transform: uppercase;
+    text-decoration: none; padding: .4rem 0;
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size .45s var(--ease);
+  }
+  .menu a:hover, .menu a[aria-current='page'] { background-size: 100% 1px; }
+  @media (min-width: 821px) { .menu { display: contents; } .menu > ul { display: flex; } }
+  @media (max-width: 820px) {
+    .menu summary { display: grid; gap: 7px; cursor: pointer; padding: 12px 4px; list-style: none; }
+    .menu summary::-webkit-details-marker { display: none; }
+    .menu summary span { width: 26px; height: 1px; background: currentColor; display: block; }
+    .menu ul {
+      position: absolute; left: 0; right: 0; top: 72px; flex-direction: column; gap: 0;
+      background: inherit; padding: 1rem 16px 1.5rem; border-bottom: 1px solid var(--line);
+    }
+    .site-header.tone-brand .menu ul { background: var(--maroon-deep); }
+    .site-header.tone-paper .menu ul { background: var(--bg); }
+    .menu li a { display: block; padding: .9rem 0; border-bottom: 1px solid var(--line); background: none; }
+  }
+</style>

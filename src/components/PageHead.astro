@@ -1,0 +1,19 @@
+---
+// Masthead used at the top of inner pages.
+interface Props { kicker: string; title: string; italic?: string; dek?: string }
+const { kicker, title, italic, dek } = Astro.props;
+---
+<header class="wrap page-head">
+  <p class="kicker" data-reveal>{kicker}</p>
+  <h1 class="display" data-reveal="mask" style="--d:1">{title}{italic && <> <em>{italic}</em></>}</h1>
+  {dek && <p class="dek" data-reveal style="--d:2">{dek}</p>}
+  <span class="rule" data-reveal style="--d:3" aria-hidden="true"><i></i></span>
+  <slot />
+</header>
+<style>
+  .page-head { padding-top: clamp(3.5rem, 8vw, 7rem); }
+  h1 { font-size: clamp(3.4rem, 10vw, 8.5rem); margin: .5rem 0 0; letter-spacing: -.04em; }
+  h1 em { color: var(--gold); }
+  .dek { font-size: clamp(1.15rem, 2vw, 1.45rem); max-width: 50ch; margin: 1.4rem 0 0; }
+  .rule { margin-top: 3rem; }
+</style>

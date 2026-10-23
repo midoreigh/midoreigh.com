@@ -1,0 +1,102 @@
+---
+import Base from '../layouts/Base.astro';
+import Yantra from '../components/Yantra.astro';
+import Emblem from '../components/Emblem.astro';
+import { SITE, LANGUAGES } from '../lib/site';
+
+const jsonLd = [
+  {
+    '@type': 'ProfilePage',
+    url: `${SITE.url}/about`,
+    mainEntity: { '@id': `${SITE.url}/#person`, '@type': 'Person', name: SITE.author, url: `${SITE.url}/about`, sameAs: [SITE.github] },
+  },
+];
+const convictions = [
+  { k: 'geopolitics', t: 'Maps are arguments', d: 'Every border is a story someone won. I try to read both the map and its margins.' },
+  { k: 'tech', t: 'Tools shape tribes', d: 'Technology is never neutral. I write about who builds it, who uses it, and who gets used by it.' },
+  { k: 'culture', t: 'More is more', d: 'Layered, contradictory, alive — ideas are richer when they keep their colour.' },
+] as const;
+---
+<Base title="About" description={`About ${SITE.author} and the ${SITE.name} journal — why it exists and what it covers.`} jsonLd={jsonLd}>
+  <section class="wrap intro">
+    <div>
+      <p class="kicker" data-reveal>About</p>
+      <h1 class="display" data-reveal="mask" style="--d:1">Hello, I’m <em>{SITE.author}.</em></h1>
+      <p class="lede" data-reveal style="--d:2">
+        <em>midoreigh</em> is my personal journal — a place where geopolitics, technology and culture meet
+        like rivers at a confluence. Some pieces are long essays; some are notes in the margin.
+      </p>
+    </div>
+    <div class="portrait" data-reveal="mask" style="--d:2" aria-hidden="true">
+      <span class="arch-line"></span>
+      <Yantra class="p-yantra" />
+    </div>
+  </section>
+
+  <section class="narrow copy">
+    <span class="rule" aria-hidden="true"><i></i></span>
+    <h2 class="display" data-reveal>Why this exists</h2>
+    <p data-reveal>
+      The internet is full of hot takes and cold summaries. This is an attempt at something warmer:
+      slow, opinionated writing that connects the dots between a trade route, a software release and a
+      film song. The world doesn’t arrive in neat categories, so neither will this journal.
+    </p>
+    <p data-reveal>
+      I write in {Object.values(LANGUAGES).slice(0, -1).join(', ')} and {Object.values(LANGUAGES).at(-1)} — whichever
+      language the thought arrived in.
+    </p>
+    <p class="note" data-reveal>
+      Placeholder copy — edit <code>src/pages/about.astro</code> to tell your own story.
+    </p>
+  </section>
+
+  <section class="wrap convictions" aria-labelledby="c-title">
+    <p class="kicker" data-reveal>Three convictions</p>
+    <h2 id="c-title" class="display h-section" data-reveal style="--d:1">What I <em>believe</em></h2>
+    <ol>
+      {convictions.map((c, i) => (
+        <li data-reveal style={`--d:${i}`}>
+          <Emblem kind={c.k} class="c-emblem" />
+          <span class="c-num">0{i + 1}</span>
+          <h3 class="display">{c.t}</h3>
+          <p>{c.d}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="narrow copy">
+    <h2 class="display" data-reveal>Say hello</h2>
+    <p data-reveal>
+      Find me on <a href={SITE.github} rel="me">GitHub</a>, or follow along by <a href="/rss.xml">RSS</a>.
+      Machines are welcome too: there’s an <a href="/llms.txt">llms.txt</a>, and every essay has a plain
+      Markdown twin.
+    </p>
+  </section>
+</Base>
+
+<style>
+  .intro { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: clamp(2rem, 6vw, 6rem); align-items: end; padding-top: clamp(3.5rem, 8vw, 7rem); }
+  h1 { font-size: clamp(3.2rem, 8.5vw, 7.5rem); margin: .5rem 0 1.6rem; letter-spacing: -.04em; }
+  h1 em { color: var(--gold); }
+  .lede { font-size: clamp(1.2rem, 2vw, 1.5rem); max-width: 40ch; color: var(--ink-2); margin: 0; }
+  .portrait { position: relative; aspect-ratio: 3 / 4; background: var(--maroon); border-radius: 999px 999px 0 0; display: grid; place-items: center; overflow: hidden; }
+  .portrait .arch-line { position: absolute; inset: 14px; border: 1px solid var(--gilt-soft); border-bottom: 0; border-radius: 999px 999px 0 0; }
+  .portrait :global(.p-yantra) { width: 140%; max-width: none; }
+  @media (max-width: 760px) { .intro { grid-template-columns: 1fr; } .portrait { max-width: 300px; } }
+
+  .copy { padding-top: 5rem; font-size: 1.25rem; line-height: 1.72; }
+  .copy h2 { font-size: clamp(2rem, 4vw, 2.8rem); margin: 2.5rem 0 1rem; }
+  .copy a { text-decoration-color: var(--gold); text-underline-offset: 4px; }
+  .note { font-size: 1rem; color: var(--ink-3); font-style: italic; }
+  .note code { font-style: normal; background: var(--bg-2); padding: .1em .35em; border-radius: 3px; font-size: .85em; }
+
+  .convictions { padding-top: 7rem; }
+  .convictions ol { list-style: none; padding: 0; margin: 3rem 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1.5rem, 4vw, 3.5rem); }
+  .convictions li { border-top: 1px solid var(--line-strong); padding-top: 2rem; }
+  .convictions :global(.c-emblem) { width: 84px; color: var(--gold); margin-bottom: 1.6rem; }
+  .c-num { font-family: var(--font-ui); font-size: .75rem; letter-spacing: .2em; color: var(--gold); }
+  .convictions h3 { font-size: 2rem; margin: .4rem 0 .6rem; }
+  .convictions p { color: var(--ink-2); margin: 0; }
+  @media (max-width: 820px) { .convictions ol { grid-template-columns: 1fr; } }
+</style>

@@ -1,0 +1,125 @@
+/* ------------------------------------------------------------------
+   midoreigh — editorial luxe
+   Jewel tones, fine gold line-work, big serif type.
+------------------------------------------------------------------- */
+:root {
+  /* Brand surfaces: identical in light and dark */
+  --maroon-deep: #320811;
+  --maroon: #4A0D17;
+  --emerald-deep: #0B3A2F;
+  --cream: #F3E7D3;
+  --gilt: #C9A24B;
+  --gilt-soft: rgba(201, 162, 75, 0.35);
+
+  /* Theme tokens (light) */
+  --bg: #F5EEE2;
+  --bg-2: #ECE2D0;
+  --surface: #FBF7EF;
+  --ink: #1C1315;
+  --ink-2: #554543;
+  --ink-3: #85766E;
+  --line: rgba(28, 19, 21, 0.14);
+  --line-strong: rgba(28, 19, 21, 0.32);
+  --oxblood: #6E1424;
+  --emerald: #0F5A47;
+  --gold: #8E6D28;
+  --saffron: #A8501A;
+
+  --font-display: 'Fraunces', 'Noto Serif Malayalam', 'Noto Serif Devanagari', 'Noto Serif Tamil', Georgia, serif;
+  --font-body: 'Newsreader', 'Noto Serif Malayalam', 'Noto Serif Devanagari', 'Noto Serif Tamil', Georgia, serif;
+  --font-ui: 'Instrument Sans', 'Noto Sans Malayalam', 'Noto Sans Devanagari', 'Noto Sans Tamil', system-ui, sans-serif;
+
+  --wrap: 1240px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #120A0C;
+    --bg-2: #1A0F12;
+    --surface: #1F1316;
+    --ink: #F3E9D8;
+    --ink-2: #C7B7A6;
+    --ink-3: #8F7F73;
+    --line: rgba(243, 233, 216, 0.13);
+    --line-strong: rgba(243, 233, 216, 0.3);
+    --oxblood: #D0566B;
+    --emerald: #4FB596;
+    --gold: #D4AF5F;
+    --saffron: #E38D52;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--bg);
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img, svg { max-width: 100%; }
+a { color: inherit; }
+::selection { background: var(--gilt); color: var(--maroon-deep); }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+/* Indic text needs more room for vowel signs */
+:lang(ml), :lang(ta), :lang(hi) { line-height: 1.8; }
+
+.wrap { width: min(100% - 32px, var(--wrap)); margin-inline: auto; }
+.narrow { width: min(100% - 32px, 720px); margin-inline: auto; }
+.skip { position: absolute; left: -9999px; top: 0; z-index: 100; background: var(--gilt); color: var(--maroon-deep); padding: .6rem 1rem; }
+.skip:focus { left: 1rem; top: 1rem; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- Type ---------- */
+.kicker {
+  font-family: var(--font-ui); font-size: .72rem; font-weight: 500;
+  letter-spacing: .22em; text-transform: uppercase; color: var(--gold);
+}
+.display {
+  font-family: var(--font-display); font-weight: 350; line-height: .98;
+  letter-spacing: -.02em; font-variation-settings: 'opsz' 144, 'SOFT' 30;
+}
+.display em, .display i { font-style: italic; font-weight: 300; }
+.h-section { font-size: clamp(2.4rem, 5.5vw, 4.4rem); margin: .3rem 0 0; }
+.dek { font-family: var(--font-body); font-style: italic; color: var(--ink-2); }
+
+/* ---------- Ornament: hairline rule with a block-print diamond ---------- */
+.rule {
+  display: flex; align-items: center; gap: .9rem; color: var(--gold);
+}
+.rule::before, .rule::after { content: ''; flex: 1; height: 1px; background: currentColor; opacity: .55; }
+.rule > i { width: 7px; height: 7px; transform: rotate(45deg); border: 1px solid currentColor; display: block; }
+.dots { height: 6px; background: radial-gradient(circle, currentColor 1px, transparent 1.4px) 0 50% / 10px 6px repeat-x; color: var(--gold); opacity: .7; }
+
+/* ---------- Links & buttons ---------- */
+.link {
+  font-family: var(--font-ui); font-size: .82rem; font-weight: 500; letter-spacing: .16em;
+  text-transform: uppercase; text-decoration: none; color: var(--ink);
+  display: inline-flex; gap: .6rem; align-items: center; padding-bottom: .35rem;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+  transition: background-size .5s var(--ease), gap .4s var(--ease);
+}
+.link:hover { background-size: 30% 1px; gap: 1rem; }
+.link.on-dark { color: var(--cream); }
+
+/* ---------- Reveal on scroll (JS adds .is-in) ---------- */
+[data-reveal] { opacity: 0; transform: translateY(36px); transition: opacity 1.1s var(--ease), transform 1.1s var(--ease); transition-delay: calc(var(--d, 0) * 90ms); }
+[data-reveal].is-in { opacity: 1; transform: none; }
+[data-reveal='mask'] { opacity: 1; transform: none; clip-path: inset(0 0 100% 0); transition: clip-path 1.3s var(--ease); transition-delay: calc(var(--d, 0) * 90ms); }
+[data-reveal='mask'].is-in { clip-path: inset(0 0 0 0); }
+[data-reveal='line'] { opacity: 1; transform: scaleX(0); transform-origin: left; transition: transform 1.4s var(--ease); }
+[data-reveal='line'].is-in { transform: none; }
+.no-js [data-reveal] { opacity: 1; transform: none; clip-path: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  [data-reveal] { opacity: 1; transform: none; clip-path: none; }
+}

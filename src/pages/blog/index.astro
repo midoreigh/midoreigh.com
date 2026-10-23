@@ -1,0 +1,27 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Filters from '../../components/Filters.astro';
+import PostRow from '../../components/PostRow.astro';
+import { SITE, getPosts } from '../../lib/site';
+
+const posts = await getPosts();
+const jsonLd = [
+  {
+    '@type': 'CollectionPage',
+    name: 'Journal',
+    url: `${SITE.url}/blog`,
+    isPartOf: { '@id': `${SITE.url}/#website` },
+    hasPart: posts.map((p) => ({ '@type': 'BlogPosting', headline: p.data.title, url: `${SITE.url}/blog/${p.id}` })),
+  },
+];
+---
+<Base title="Journal" description="Every essay and note on geopolitics, technology and culture, newest first." jsonLd={jsonLd}>
+  <PageHead kicker="The journal" title="All" italic="dispatches" dek={`${posts.length} essays and notes, newest first.`}>
+    <Filters active="all" />
+  </PageHead>
+  <section class="wrap" style="padding-top:3rem">
+    <ol class="rows">{posts.map((post, i) => <PostRow post={post} n={i} />)}</ol>
+  </section>
+</Base>
+<style>.rows { list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--line); }</style>

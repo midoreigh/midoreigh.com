@@ -1,0 +1,194 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Emblem from '../../components/Emblem.astro';
+import PostRow from '../../components/PostRow.astro';
+import { SITE, CATEGORIES, LANGUAGES, getPosts, formatDate, readingTime } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post, all: posts } }));
+}
+
+const { post, all } = Astro.props;
+const { Content, headings } = await render(post);
+const { lang } = post.data;
+const cat = CATEGORIES[post.data.category];
+const url = `${SITE.url}/blog/${post.id}`;
+const minutes = readingTime(post.body);
+const toc = headings.filter((h) => h.depth === 2);
+const related = all
+  .filter((p) => p.id !== post.id)
+  .map((p) => ({ p, score: (p.data.category === post.data.category ? 2 : 0) + p.data.tags.filter((t) => post.data.tags.includes(t)).length }))
+  .sort((a, b) => b.score - a.score)
+  .slice(0, 3)
+  .map(({ p }) => p);
+
+const jsonLd = [
+  {
+    '@type': 'BlogPosting',
+    '@id': `${url}#article`,
+    headline: post.data.title,
+    description: post.data.description,
+    url,
+    mainEntityOfPage: url,
+    datePublished: post.data.pubDate.toISOString(),
+    dateModified: (post.data.updatedDate ?? post.data.pubDate).toISOString(),
+    author: { '@id': `${SITE.url}/#person`, '@type': 'Person', name: SITE.author, url: `${SITE.url}/about` },
+    publisher: { '@id': `${SITE.url}/#person` },
+    articleSection: cat.name,
+    keywords: post.data.tags.join(', '),
+    wordCount: post.body?.split(/\s+/).length,
+    timeRequired: `PT${minutes}M`,
+    inLanguage: lang,
+    image: `${SITE.url}/og.png`,
+  },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+      { '@type': 'ListItem', position: 2, name: cat.name, item: `${SITE.url}/blog/category/${post.data.category}` },
+      { '@type': 'ListItem', position: 3, name: post.data.title, item: url },
+    ],
+  },
+];
+---
+<Base
+  title={post.data.title}
+  description={post.data.description}
+  type="article"
+  lang={lang}
+  publishedTime={post.data.pubDate}
+  modifiedTime={post.data.updatedDate}
+  tags={post.data.tags}
+  markdownAlternate={`/blog/${post.id}.md`}
+  jsonLd={jsonLd}
+>
+  <div class="progress" aria-hidden="true"></div>
+  <article class="post" style={`--c:${cat.color}`}>
+    <header class="post-head wrap">
+      <div class="head-copy">
+        <nav class="kicker crumbs" aria-label="Breadcrumb" lang="en" data-reveal>
+          <a href="/blog">Journal</a> <span aria-hidden="true">/</span> <a href={`/blog/category/${post.data.category}`}>{cat.name}</a>
+          {lang !== 'en' && <span class="lang-tag">{LANGUAGES[lang]}</span>}
+        </nav>
+        <h1 class="display" data-reveal="mask" style="--d:1">{post.data.title}</h1>
+        <p class="dek" data-reveal style="--d:2">{post.data.description}</p>
+        <p class="meta" lang="en" data-reveal style="--d:3">
+          <span>By <a href="/about" rel="author">{SITE.author}</a></span>
+          <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+          <span>{minutes} min read</span>
+          {post.data.updatedDate && <span>Updated <time datetime={post.data.updatedDate.toISOString()}>{formatDate(post.data.updatedDate)}</time></span>}
+        </p>
+      </div>
+      <div class="head-art" data-reveal="mask" style="--d:2" aria-hidden="true">
+        <span class="arch-line"></span>
+        <Emblem kind={post.data.category} class="head-emblem" />
+      </div>
+    </header>
+
+    <div class="narrow body">
+      {toc.length > 2 && (
+        <nav class="toc" aria-label="Contents">
+          <p class="kicker" lang="en">In this essay</p>
+          <ol>{toc.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol>
+        </nav>
+      )}
+      <div class:list={['prose', { indic: lang !== 'en' }]}>
+        <Content />
+      </div>
+      <span class="rule end" aria-hidden="true"><i></i></span>
+      <footer class="post-foot" lang="en">
+        {post.data.tags.length > 0 && (
+          <ul class="tags" aria-label="Tags">{post.data.tags.map((t) => <li>{t}</li>)}</ul>
+        )}
+        <p class="src">Prefer plain text? Read the <a href={`/blog/${post.id}.md`}>Markdown source</a>.</p>
+      </footer>
+    </div>
+  </article>
+
+  {related.length > 0 && (
+    <section class="wrap related" aria-labelledby="related-title" lang="en">
+      <p class="kicker">Continue</p>
+      <h2 id="related-title" class="display">Keep <em>reading</em></h2>
+      <ol class="rows">{related.map((p, i) => <PostRow post={p} n={i} />)}</ol>
+    </section>
+  )}
+</Base>
+
+<style>
+  .progress {
+    position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 60; background: var(--gold);
+    transform-origin: left; transform: scaleX(0);
+    animation: progress linear both; animation-timeline: scroll(root);
+  }
+  @keyframes progress { to { transform: scaleX(1); } }
+  @supports not (animation-timeline: scroll()) { .progress { display: none; } }
+
+  .post-head {
+    display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: clamp(2rem, 6vw, 5rem); align-items: end;
+    padding-top: clamp(3rem, 7vw, 6rem); padding-bottom: 3rem; border-bottom: 1px solid var(--line);
+  }
+  .crumbs a { text-decoration: none; }
+  .crumbs a:hover { color: var(--ink); }
+  .lang-tag { margin-left: 1rem; padding: .15rem .6rem; border: 1px solid var(--gold); border-radius: 999px; letter-spacing: .05em; text-transform: none; }
+  h1 { font-size: clamp(2.8rem, 7vw, 6rem); margin: 1rem 0 1.4rem; letter-spacing: -.035em; }
+  .post-head .dek { font-size: clamp(1.2rem, 2vw, 1.55rem); max-width: 46ch; margin: 0 0 2rem; }
+  .meta { display: flex; flex-wrap: wrap; gap: .4rem 1.6rem; margin: 0; font-family: var(--font-ui); font-size: .82rem; color: var(--ink-3); letter-spacing: .04em; }
+  .meta a { color: var(--ink); }
+  .head-art { position: relative; aspect-ratio: 3 / 4; background: var(--c); color: var(--gilt); border-radius: 999px 999px 0 0; display: grid; place-items: center; }
+  .head-art .arch-line { position: absolute; inset: 10px; border: 1px solid var(--gilt-soft); border-bottom: 0; border-radius: 999px 999px 0 0; }
+  .head-art :global(.head-emblem) { width: 58%; }
+  :lang(ml) h1, :lang(ta) h1, :lang(hi) h1 { line-height: 1.25; letter-spacing: 0; font-size: clamp(2.2rem, 5vw, 4.2rem); }
+  @media (max-width: 760px) { .post-head { grid-template-columns: 1fr; } .head-art { display: none; } }
+
+  .body { padding-top: 3.5rem; }
+  .toc { margin-bottom: 3rem; padding-bottom: 1.4rem; border-bottom: 1px solid var(--line); }
+  .toc .kicker { margin: 0 0 .8rem; }
+  .toc ol { margin: 0; padding-left: 1.4rem; display: grid; gap: .3rem; }
+  .toc li::marker { color: var(--gold); font-family: var(--font-ui); font-size: .8em; }
+  .toc a { text-decoration: none; }
+  .toc a:hover { color: var(--gold); }
+
+  .prose { font-size: 1.25rem; line-height: 1.72; }
+  .prose.indic { font-size: 1.15rem; line-height: 1.95; }
+  .prose :global(p) { margin: 0 0 1.4em; }
+  .prose:not(.indic) :global(> p:first-of-type::first-letter) {
+    font-family: var(--font-display); font-weight: 300; float: left; font-size: 5.2em; line-height: .78;
+    padding: .06em .1em 0 0; color: var(--gold); font-variation-settings: 'opsz' 144;
+  }
+  .prose :global(h2) {
+    font-family: var(--font-display); font-weight: 400; font-size: clamp(1.8rem, 3.4vw, 2.4rem); line-height: 1.12;
+    letter-spacing: -.02em; margin: 2.6em 0 .7em; scroll-margin-top: 2rem; font-variation-settings: 'opsz' 96;
+  }
+  .prose :global(h3) { font-family: var(--font-ui); font-size: .82rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); margin: 2.4em 0 .6em; }
+  .prose :global(a) { color: inherit; text-decoration-color: var(--gold); text-decoration-thickness: 1px; text-underline-offset: 4px; }
+  .prose :global(a:hover) { color: var(--gold); }
+  .prose :global(blockquote) {
+    margin: 2.4em -2rem; padding: 0 2rem; border-left: 1px solid var(--gold);
+    font-family: var(--font-display); font-style: italic; font-weight: 300; font-size: clamp(1.6rem, 3vw, 2.1rem); line-height: 1.25; color: var(--ink);
+  }
+  .prose :global(blockquote p) { margin: 0; }
+  .prose :global(code) { font-size: .82em; background: var(--bg-2); padding: .12em .35em; border-radius: 3px; }
+  .prose :global(pre) { padding: 1.2rem 1.4rem; border-radius: 4px; overflow-x: auto; font-size: .9rem; line-height: 1.55; margin: 0 0 1.6em; }
+  .prose :global(pre code) { background: none; padding: 0; }
+  .prose :global(hr) { border: 0; height: 7px; margin: 3em auto; width: 7px; border: 1px solid var(--gold); transform: rotate(45deg); }
+  .prose :global(ul), .prose :global(ol) { padding-left: 1.3em; margin: 0 0 1.4em; }
+  .prose :global(li) { margin-bottom: .35em; }
+  .prose :global(li::marker) { color: var(--gold); }
+  .prose :global(strong) { font-weight: 600; }
+  .prose :global(table) { width: 100%; border-collapse: collapse; font-size: 1rem; margin: 0 0 1.6em; }
+  .prose :global(th), .prose :global(td) { border-bottom: 1px solid var(--line); padding: .6rem .5rem; text-align: left; }
+  @media (max-width: 760px) { .prose :global(blockquote) { margin-inline: 0; padding-inline: 1.2rem; } }
+
+  .end { margin: 3.5rem 0 2rem; }
+  .tags { list-style: none; padding: 0; margin: 0 0 1rem; display: flex; flex-wrap: wrap; gap: .5rem; }
+  .tags li { font-family: var(--font-ui); font-size: .75rem; letter-spacing: .08em; padding: .3rem .8rem; border: 1px solid var(--line-strong); border-radius: 999px; color: var(--ink-2); }
+  .src { font-size: 1rem; color: var(--ink-3); font-style: italic; }
+  .src a { color: var(--ink-2); }
+
+  .related { padding-top: 6rem; }
+  .related h2 { font-size: clamp(2.2rem, 5vw, 3.6rem); margin: .3rem 0 2.5rem; }
+  .related h2 em { color: var(--gold); }
+  .rows { list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--line); }
+</style>

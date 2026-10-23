@@ -1,0 +1,18 @@
+---
+import { CATEGORIES } from '../lib/site';
+interface Props { active?: string }
+const { active = 'all' } = Astro.props;
+const items = [{ key: 'all', name: 'All', href: '/blog' }, ...Object.entries(CATEGORIES).map(([key, c]) => ({ key, name: c.name, href: `/blog/category/${key}` }))];
+---
+<nav class="filters" aria-label="Sections" data-reveal style="--d:3">
+  {items.map((i) => <a href={i.href} aria-current={i.key === active ? 'page' : undefined}>{i.name}</a>)}
+</nav>
+<style>
+  .filters { display: flex; flex-wrap: wrap; gap: .6rem 2rem; margin-top: 2rem; }
+  a {
+    font-family: var(--font-ui); font-size: .76rem; font-weight: 500; letter-spacing: .18em; text-transform: uppercase;
+    text-decoration: none; color: var(--ink-3); padding: .3rem 0;
+    background: linear-gradient(var(--gold), var(--gold)) 0 100% / 0 1px no-repeat; transition: background-size .45s var(--ease), color .3s;
+  }
+  a:hover, a[aria-current='page'] { color: var(--ink); background-size: 100% 1px; }
+</style>

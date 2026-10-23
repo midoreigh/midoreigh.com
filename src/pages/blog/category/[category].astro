@@ -1,0 +1,42 @@
+---
+import Base from '../../../layouts/Base.astro';
+import PageHead from '../../../components/PageHead.astro';
+import Filters from '../../../components/Filters.astro';
+import PostRow from '../../../components/PostRow.astro';
+import { SITE, CATEGORIES, getPosts, type CategoryKey } from '../../../lib/site';
+
+export function getStaticPaths() {
+  return Object.keys(CATEGORIES).map((category) => ({ params: { category } }));
+}
+
+const key = Astro.params.category as CategoryKey;
+const cat = CATEGORIES[key];
+const posts = (await getPosts()).filter((p) => p.data.category === key);
+const jsonLd = [
+  { '@type': 'CollectionPage', name: `${cat.name} essays`, url: `${SITE.url}/blog/category/${key}`, isPartOf: { '@id': `${SITE.url}/#website` } },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+      { '@type': 'ListItem', position: 2, name: 'Journal', item: `${SITE.url}/blog` },
+      { '@type': 'ListItem', position: 3, name: cat.name, item: `${SITE.url}/blog/category/${key}` },
+    ],
+  },
+];
+---
+<Base title={`${cat.name} essays`} description={`${cat.name}: ${cat.blurb}`} jsonLd={jsonLd} noindex={posts.length === 0}>
+  <PageHead kicker="Section" title={cat.name} dek={cat.blurb}>
+    <Filters active={key} />
+  </PageHead>
+  <section class="wrap" style="padding-top:3rem">
+    {posts.length ? (
+      <ol class="rows">{posts.map((post, i) => <PostRow post={post} n={i} />)}</ol>
+    ) : (
+      <p class="empty dek">The ink is still drying on this section. <a href="/blog">Browse the journal →</a></p>
+    )}
+  </section>
+</Base>
+<style>
+  .rows { list-style: none; margin: 0; padding: 0; border-bottom: 1px solid var(--line); }
+  .empty { font-size: 1.4rem; padding: 3rem 0; }
+</style>
