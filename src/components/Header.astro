@@ -1,7 +1,9 @@
 ---
+import { cleanPath } from '../lib/site';
+
 interface Props { tone?: 'paper' | 'brand' }
 const { tone = 'paper' } = Astro.props;
-const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const path = cleanPath(Astro.url.pathname);
 const links = [
   { href: '/blog', label: 'Journal' },
   { href: '/blog/category/geopolitics', label: 'Geopolitics' },

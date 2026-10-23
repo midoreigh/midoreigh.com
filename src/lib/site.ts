@@ -45,6 +45,11 @@ export async function getPosts(): Promise<Post[]> {
   return posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 }
 
+/** Public URL path for a page (the build emits `about.html`, served as `/about`). */
+export function cleanPath(pathname: string): string {
+  return pathname.replace(/(index)?\.html$/, '').replace(/(.)\/$/, '$1') || '/';
+}
+
 export function readingTime(body = ''): number {
   return Math.max(1, Math.round(body.split(/\s+/).filter(Boolean).length / 220));
 }
