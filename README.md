@@ -17,6 +17,8 @@ category: geopolitics   # geopolitics | tech | culture | notes
 lang: en                # en | ml | hi | ta
 tags: ['tag one', 'tag two']
 featured: false         # true = cover story on the home page
+cover: '../../assets/blog/my-essay/cover.jpg'   # optional; shown on the post, in lists and as the share image
+coverAlt: 'Describe the image'
 draft: false
 ---
 
@@ -24,6 +26,14 @@ Your essay…
 ```
 
 The filename becomes the URL: `src/content/blog/my-essay.md` → `/blog/my-essay`.
+
+Images go in `src/assets/blog/<post>/` and are optimised at build time (WebP, several sizes). In the post, an italic line straight after an image becomes its caption:
+
+```md
+![Alt text describing the image](../../assets/blog/my-essay/photo.jpg)
+
+*Caption shown under the image.*
+```
 
 ## Deploying
 

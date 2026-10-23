@@ -4,17 +4,20 @@ import { z } from 'astro/zod';
 
 const blog = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/blog' }),
-  schema: z.object({
-    title: z.string(),
-    description: z.string(),
-    pubDate: z.coerce.date(),
-    updatedDate: z.coerce.date().optional(),
-    category: z.enum(['geopolitics', 'tech', 'culture', 'notes']),
-    lang: z.enum(['en', 'ml', 'hi', 'ta']).default('en'),
-    tags: z.array(z.string()).default([]),
-    featured: z.boolean().default(false),
-    draft: z.boolean().default(false),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      description: z.string(),
+      pubDate: z.coerce.date(),
+      updatedDate: z.coerce.date().optional(),
+      category: z.enum(['geopolitics', 'tech', 'culture', 'notes']),
+      cover: image().optional(),
+      coverAlt: z.string().optional(),
+      lang: z.enum(['en', 'ml', 'hi', 'ta']).default('en'),
+      tags: z.array(z.string()).default([]),
+      featured: z.boolean().default(false),
+      draft: z.boolean().default(false),
+    }),
 });
 
 export const collections = { blog };

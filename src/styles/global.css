@@ -113,8 +113,9 @@ a { color: inherit; }
 /* ---------- Reveal on scroll (JS adds .is-in) ---------- */
 [data-reveal] { opacity: 0; transform: translateY(36px); transition: opacity 1.1s var(--ease), transform 1.1s var(--ease); transition-delay: calc(var(--d, 0) * 90ms); }
 [data-reveal].is-in { opacity: 1; transform: none; }
-[data-reveal='mask'] { opacity: 1; transform: none; clip-path: inset(0 0 100% 0); transition: clip-path 1.3s var(--ease); transition-delay: calc(var(--d, 0) * 90ms); }
-[data-reveal='mask'].is-in { clip-path: inset(0 0 0 0); }
+[data-reveal='mask'] { opacity: 1; transform: none; clip-path: inset(-25% -25% 125% -25%); transition: clip-path 1.3s var(--ease); transition-delay: calc(var(--d, 0) * 90ms); }
+/* Ends with slack around the box so parallax-drifting children are never clipped */
+[data-reveal='mask'].is-in { clip-path: inset(-25% -25% -25% -25%); }
 [data-reveal='line'] { opacity: 1; transform: scaleX(0); transform-origin: left; transition: transform 1.4s var(--ease); }
 [data-reveal='line'].is-in { transform: none; }
 .no-js [data-reveal] { opacity: 1; transform: none; clip-path: none; }

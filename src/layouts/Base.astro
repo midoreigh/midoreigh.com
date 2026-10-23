@@ -16,6 +16,8 @@ interface Props {
   noindex?: boolean;
   lang?: string;
   headerTone?: 'paper' | 'brand';
+  /** Absolute or root-relative URL of a 1200×630 share image. */
+  image?: string;
 }
 const {
   title,
@@ -29,11 +31,12 @@ const {
   noindex = false,
   lang = 'en',
   headerTone = 'paper',
+  image = '/og.png',
 } = Astro.props;
 
 const fullTitle = title ? `${title} · ${SITE.name}` : SITE.title;
 const canonical = new URL(cleanPath(Astro.url.pathname), SITE.url).href;
-const ogImage = new URL('/og.png', SITE.url).href;
+const ogImage = new URL(image, SITE.url).href;
 
 const person = { '@type': 'Person', '@id': `${SITE.url}/#person`, name: SITE.author, url: `${SITE.url}/about`, sameAs: [SITE.github] };
 const website = {

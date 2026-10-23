@@ -1,5 +1,6 @@
 ---
 import { render } from 'astro:content';
+import { Image, getImage } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import Emblem from '../../components/Emblem.astro';
 import PostRow from '../../components/PostRow.astro';
@@ -16,6 +17,10 @@ const { lang } = post.data;
 const cat = CATEGORIES[post.data.category];
 const url = `${SITE.url}/blog/${post.id}`;
 const minutes = readingTime(post.body);
+const { cover, coverAlt } = post.data;
+const shareImage = cover
+  ? (await getImage({ src: cover, width: 1200, height: 630, fit: 'cover', format: 'jpeg' })).src
+  : '/og.png';
 const toc = headings.filter((h) => h.depth === 2);
 const related = all
   .filter((p) => p.id !== post.id)
@@ -41,7 +46,7 @@ const jsonLd = [
     wordCount: post.body?.split(/\s+/).length,
     timeRequired: `PT${minutes}M`,
     inLanguage: lang,
-    image: `${SITE.url}/og.png`,
+    image: new URL(shareImage, SITE.url).href,
   },
   {
     '@type': 'BreadcrumbList',
@@ -62,11 +67,12 @@ const jsonLd = [
   modifiedTime={post.data.updatedDate}
   tags={post.data.tags}
   markdownAlternate={`/blog/${post.id}.md`}
+  image={shareImage}
   jsonLd={jsonLd}
 >
   <div class="progress" aria-hidden="true"></div>
   <article class="post" style={`--c:${cat.color}`}>
-    <header class="post-head wrap">
+    <header class:list={['post-head wrap', { 'has-cover': cover }]}>
       <div class="head-copy">
         <nav class="kicker crumbs" aria-label="Breadcrumb" lang="en" data-reveal>
           <a href="/blog">Journal</a> <span aria-hidden="true">/</span> <a href={`/blog/category/${post.data.category}`}>{cat.name}</a>
@@ -81,11 +87,18 @@ const jsonLd = [
           {post.data.updatedDate && <span>Updated <time datetime={post.data.updatedDate.toISOString()}>{formatDate(post.data.updatedDate)}</time></span>}
         </p>
       </div>
-      <div class="head-art" data-reveal="mask" style="--d:2" aria-hidden="true">
-        <span class="arch-line"></span>
-        <Emblem kind={post.data.category} class="head-emblem" />
-      </div>
+      {!cover && (
+        <div class="head-art" data-reveal="mask" style="--d:2" aria-hidden="true">
+          <span class="arch-line"></span>
+          <Emblem kind={post.data.category} class="head-emblem" />
+        </div>
+      )}
     </header>
+    {cover && (
+      <figure class="wrap cover" data-reveal="mask" style="--d:2">
+        <Image src={cover} alt={coverAlt ?? ''} widths={[640, 960, 1280, 1600]} sizes="(max-width: 1240px) 100vw, 1240px" loading="eager" fetchpriority="high" />
+      </figure>
+    )}
 
     <div class="narrow body">
       {toc.length > 2 && (
@@ -141,6 +154,9 @@ const jsonLd = [
   .head-art :global(.head-emblem) { width: 58%; }
   :lang(ml) h1, :lang(ta) h1, :lang(hi) h1 { line-height: 1.25; letter-spacing: 0; font-size: clamp(2.2rem, 5vw, 4.2rem); }
   @media (max-width: 760px) { .post-head { grid-template-columns: 1fr; } .head-art { display: none; } }
+  .post-head.has-cover { grid-template-columns: 1fr; border-bottom: 0; padding-bottom: 2.5rem; }
+  .cover { margin-block: 0; padding: 0; }
+  .cover :global(img) { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 2px; }
 
   .body { padding-top: 3.5rem; }
   .toc { margin-bottom: 3rem; padding-bottom: 1.4rem; border-bottom: 1px solid var(--line); }
@@ -177,6 +193,14 @@ const jsonLd = [
   .prose :global(li) { margin-bottom: .35em; }
   .prose :global(li::marker) { color: var(--gold); }
   .prose :global(strong) { font-weight: 600; }
+  .prose :global(p:has(> img)) { margin: 2.6em -6vw .8em; }
+  .prose :global(img) { display: block; width: 100%; height: auto; border-radius: 2px; }
+  .prose :global(p:has(> img) + p:has(> em:only-child)) {
+    margin: 0 0 2.4em; font-family: var(--font-ui); font-size: .82rem; letter-spacing: .02em; color: var(--ink-3);
+    padding-left: .9rem; border-left: 1px solid var(--gold);
+  }
+  .prose :global(p:has(> img) + p:has(> em:only-child) em) { font-style: normal; }
+  @media (min-width: 1100px) { .prose :global(p:has(> img)) { margin-inline: -12rem; } }
   .prose :global(table) { width: 100%; border-collapse: collapse; font-size: 1rem; margin: 0 0 1.6em; }
   .prose :global(th), .prose :global(td) { border-bottom: 1px solid var(--line); padding: .6rem .5rem; text-align: left; }
   @media (max-width: 760px) { .prose :global(blockquote) { margin-inline: 0; padding-inline: 1.2rem; } }

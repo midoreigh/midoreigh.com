@@ -4,7 +4,6 @@ description: 'Why middle powers increasingly refuse to pick a side — and why t
 pubDate: 2026-10-20
 category: geopolitics
 tags: ['middle powers', 'diplomacy', 'india', 'world order']
-featured: true
 ---
 
 For most of the twentieth century, foreign policy was a seating chart. You sat with one bloc or the other, and if you tried to sit in the middle you were told — politely or otherwise — that the middle was not a chair.

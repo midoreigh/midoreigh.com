@@ -1,17 +1,21 @@
 ---
 // One entry in a magazine-style "contents" list.
+import { Image } from 'astro:assets';
 import { CATEGORIES, formatDate, readingTime, type Post } from '../lib/site';
 interface Props { post: Post; n: number }
 const { post, n } = Astro.props;
 const cat = CATEGORIES[post.data.category];
 ---
-<li class="row" data-reveal style={`--d:${n % 6}`}>
+<li class:list={['row', { 'has-thumb': post.data.cover }]} data-reveal style={`--d:${n % 6}`}>
   <span class="num">{String(n + 1).padStart(2, '0')}</span>
   <div class="main">
     <p class="kicker">{cat.name}{post.data.lang !== 'en' && <span class="lang"> · {post.data.lang.toUpperCase()}</span>}</p>
     <h3 class="display" lang={post.data.lang}><a href={`/blog/${post.id}`}>{post.data.title}</a></h3>
     <p class="desc" lang={post.data.lang}>{post.data.description}</p>
   </div>
+  {post.data.cover && (
+    <Image class="thumb" src={post.data.cover} alt="" width={240} height={320} fit="cover" loading="lazy" />
+  )}
   <p class="meta">
     <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
     <span>{readingTime(post.body)} min</span>
@@ -36,8 +40,12 @@ const cat = CATEGORIES[post.data.category];
   h3 a::after { content: ''; position: absolute; inset: 0; }
   .desc { margin: .7rem 0 0; color: var(--ink-2); max-width: 60ch; }
   .meta { margin: .3rem 0 0; display: grid; gap: .2rem; text-align: right; font-family: var(--font-ui); font-size: .8rem; color: var(--ink-3); letter-spacing: .04em; }
+  .row.has-thumb { grid-template-columns: 5rem 1fr 7.5rem 10rem; }
+  .thumb { width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 999px 999px 0 0; transition: transform .8s var(--ease); }
+  .row:hover .thumb { transform: translateY(-6px); }
   @media (max-width: 760px) {
-    .row { grid-template-columns: 3rem 1fr; gap: 1rem; }
+    .row, .row.has-thumb { grid-template-columns: 3rem 1fr; gap: 1rem; }
+    .thumb { display: none; }
     .num { font-size: 1.6rem; }
     .meta { grid-column: 2; text-align: left; display: flex; gap: 1rem; }
   }
