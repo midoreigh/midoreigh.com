@@ -55,7 +55,28 @@ const website = {
 <html lang={lang} class="no-js">
   <head>
     <meta charset="utf-8" />
-    <script is:inline>document.documentElement.classList.remove('no-js')</script>
+    <script is:inline>
+      // Runs before first paint: applies the reader's saved theme (light, dark, or system).
+      (() => {
+        const root = document.documentElement;
+        root.classList.remove('no-js');
+        const COLORS = { light: '#F5EEE2', dark: '#120A0C' };
+        window.__setTheme = (choice) => {
+          try {
+            choice === 'system' ? localStorage.removeItem('theme') : localStorage.setItem('theme', choice);
+          } catch {}
+          if (choice === 'system') delete root.dataset.theme;
+          else root.dataset.theme = choice;
+          document.querySelectorAll('meta[name="theme-color"]').forEach((m) => {
+            m.content = choice === 'system' ? COLORS[m.media.includes('dark') ? 'dark' : 'light'] : COLORS[choice];
+          });
+          root.dispatchEvent(new CustomEvent('themechange', { detail: choice }));
+        };
+        let saved = null;
+        try { saved = localStorage.getItem('theme'); } catch {}
+        if (saved === 'light' || saved === 'dark') root.dataset.theme = saved;
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />

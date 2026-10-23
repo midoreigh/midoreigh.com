@@ -34,8 +34,10 @@
   color-scheme: light dark;
 }
 
+/* Dark tokens apply when the reader picks dark in the header switch,
+   or leaves it on system and their device is in dark mode. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     --bg: #120A0C;
     --bg-2: #1A0F12;
     --surface: #1F1316;
@@ -48,8 +50,25 @@
     --emerald: #4FB596;
     --gold: #D4AF5F;
     --saffron: #E38D52;
+    color-scheme: dark;
   }
 }
+:root[data-theme='dark'] {
+  --bg: #120A0C;
+  --bg-2: #1A0F12;
+  --surface: #1F1316;
+  --ink: #F3E9D8;
+  --ink-2: #C7B7A6;
+  --ink-3: #8F7F73;
+  --line: rgba(243, 233, 216, 0.13);
+  --line-strong: rgba(243, 233, 216, 0.3);
+  --oxblood: #D0566B;
+  --emerald: #4FB596;
+  --gold: #D4AF5F;
+  --saffron: #E38D52;
+  color-scheme: dark;
+}
+:root[data-theme='light'] { color-scheme: light; }
 
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
