@@ -22,9 +22,6 @@ const links = [
       <button type="button" data-choice="light" aria-label="Light theme" title="Light">
         <svg viewBox="-12 -12 24 24" aria-hidden="true"><circle r="4.5" /><path d="M0,-10v3M0,7v3M-10,0h3M7,0h3M-7.1,-7.1l2.1,2.1M5,5l2.1,2.1M-7.1,7.1l2.1,-2.1M5,-5l2.1,-2.1" /></svg>
       </button>
-      <button type="button" data-choice="system" aria-label="Match system theme" title="System">
-        <svg viewBox="-12 -12 24 24" aria-hidden="true"><circle r="8" /><path class="f" d="M0,-8A8,8 0 0 1 0,8Z" /></svg>
-      </button>
       <button type="button" data-choice="dark" aria-label="Dark theme" title="Dark">
         <svg viewBox="-12 -12 24 24" aria-hidden="true"><path d="M3.5,-8.2A8.5,8.5 0 1 0 8.2,3.5A6.5,6.5 0 0 1 3.5,-8.2Z" /></svg>
       </button>
@@ -44,11 +41,13 @@ const links = [
 <script>
   const root = document.documentElement;
   const buttons = document.querySelectorAll<HTMLButtonElement>('.theme button');
-  const current = () => root.dataset.theme ?? 'system';
+  const current = () => root.dataset.theme ?? 'dark';
   const mark = () => buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.choice === current())));
   buttons.forEach((b) => b.addEventListener('click', () => window.__setTheme(b.dataset.choice!)));
   root.addEventListener('themechange', mark);
-  window.__setTheme(current());
+  // The browser-colour meta defaults to dark; bring it in line for readers who chose light.
+  if (current() === 'light') window.__setTheme('light');
+  else mark();
 </script>
 
 <style>

@@ -52,29 +52,25 @@ const website = {
 };
 ---
 <!doctype html>
-<html lang={lang} class="no-js">
+<html lang={lang} class="no-js" data-theme="dark">
   <head>
     <meta charset="utf-8" />
     <script is:inline>
-      // Runs before first paint: applies the reader's saved theme (light, dark, or system).
+      // Runs before first paint: dark is the default; a reader who chose light keeps it.
       (() => {
         const root = document.documentElement;
         root.classList.remove('no-js');
         const COLORS = { light: '#F5EEE2', dark: '#120A0C' };
         window.__setTheme = (choice) => {
-          try {
-            choice === 'system' ? localStorage.removeItem('theme') : localStorage.setItem('theme', choice);
-          } catch {}
-          if (choice === 'system') delete root.dataset.theme;
-          else root.dataset.theme = choice;
-          document.querySelectorAll('meta[name="theme-color"]').forEach((m) => {
-            m.content = choice === 'system' ? COLORS[m.media.includes('dark') ? 'dark' : 'light'] : COLORS[choice];
-          });
+          try { localStorage.setItem('theme', choice); } catch {}
+          root.dataset.theme = choice;
+          const meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.content = COLORS[choice];
           root.dispatchEvent(new CustomEvent('themechange', { detail: choice }));
         };
         let saved = null;
         try { saved = localStorage.getItem('theme'); } catch {}
-        if (saved === 'light' || saved === 'dark') root.dataset.theme = saved;
+        if (saved === 'light') root.dataset.theme = 'light';
       })();
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -83,9 +79,8 @@ const website = {
     <link rel="canonical" href={canonical} />
     <meta name="author" content={SITE.author} />
     <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1'} />
-    <meta name="theme-color" content="#F5EEE2" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#120A0C" media="(prefers-color-scheme: dark)" />
-    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#120A0C" />
+    <meta name="color-scheme" content="dark light" />
     <meta name="generator" content={Astro.generator} />
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />

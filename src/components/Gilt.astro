@@ -96,7 +96,7 @@ const { class: cls = '', style, float = false, tilt = 7 } = Astro.props;
   .lz { position: absolute; z-index: 1; width: 6px; height: 6px; background: var(--gold); transform: rotate(45deg); }
   .tl { left: -3px; top: -3px; } .tr { right: -3px; top: -3px; } .bl { left: -3px; bottom: -3px; } .br { right: -3px; bottom: -3px; }
 
-  .pic { position: relative; height: 100%; overflow: hidden; isolation: isolate; }
+  .pic { position: relative; height: 100%; overflow: hidden; isolation: isolate; contain: paint; }
   .pic > :global(*:not(.glint)) { opacity: 0; transition: opacity 1.2s var(--ease); }
   .is-in .pic > :global(*:not(.glint)), :global(.no-js) .pic > :global(*:not(.glint)) { opacity: 1; }
 
@@ -113,13 +113,15 @@ const { class: cls = '', style, float = false, tilt = 7 } = Astro.props;
 
   /* Hover glint, positioned by --gx */
   .glint {
-    position: absolute; inset: 0; z-index: 3; pointer-events: none; opacity: 0; mix-blend-mode: overlay;
+    /* Plain alpha, no blend mode: a blend inside a 3D-tilted element can leak onto the
+       whole page behind it on some GPUs in Chrome */
+    position: absolute; inset: 0; z-index: 3; pointer-events: none; opacity: 0;
     background: linear-gradient(105deg,
-      transparent calc(var(--gx) - 26%),
-      rgba(255, 236, 190, .45) calc(var(--gx) - 6%),
-      rgba(255, 246, 220, .75) var(--gx),
-      rgba(255, 236, 190, .45) calc(var(--gx) + 6%),
-      transparent calc(var(--gx) + 26%));
+      transparent calc(var(--gx) - 24%),
+      rgba(255, 236, 190, .10) calc(var(--gx) - 8%),
+      rgba(255, 244, 214, .26) var(--gx),
+      rgba(255, 236, 190, .10) calc(var(--gx) + 8%),
+      transparent calc(var(--gx) + 24%));
     transition: opacity .6s var(--ease);
   }
 
