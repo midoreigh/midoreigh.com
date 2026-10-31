@@ -17,6 +17,8 @@ So I built **Mitra for MirAIe**. *Mitra* means friend, and that's the job: a sma
 
 *Mitra in action: one click per setting, and the air follows.*
 
+Mitra has its own home now, at [mitra.midoreigh.com](https://mitra.midoreigh.com), with downloads for both platforms.
+
 ## Lay it all out
 
 The idea is simple: instead of a button that cycles, show the whole list. Auto, Cool, Dry and Fan (and Heat, on units that have it) sit side by side. Fan speed is Auto, Quiet, Low, Medium and High, named exactly as the MirAIe app names them. Both louvers get swing plus five fixed positions each. Temperature runs 16 to 30 °C with a plain minus and plus, and the room temperature the AC measures sits beside it.
@@ -89,6 +91,7 @@ Mitra is free and MIT-licensed, and the whole source is on GitHub. That freedom 
 
 ## Get it
 
+- **Website:** [mitra.midoreigh.com](https://mitra.midoreigh.com), the tour and downloads in one place.
 - **Mac:** [Mitra for Mac 1.5.1](https://github.com/midoreigh/mitra-for-miraie/releases/latest), for macOS 26 or later on Apple silicon or Intel. It checks for updates itself.
 - **Android:** [Mitra for Android 1.0.2](https://github.com/midoreigh/mitra-for-miraie/releases/tag/android-v1.0.2), for Android 8.0 or later.
 - **Source, install guide and FAQ:** [github.com/midoreigh/mitra-for-miraie](https://github.com/midoreigh/mitra-for-miraie).
