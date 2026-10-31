@@ -5,8 +5,8 @@ pubDate: 2026-10-31
 category: tech
 tags: ['mitra', 'miraie', 'macos', 'android', 'open source', 'smart home']
 featured: true
-cover: '../../assets/blog/mitra-for-miraie/panel.png'
-coverAlt: 'Three views of the Mitra panel: Cool mode with every setting one click away, the panel open under the macOS menu bar in Auto mode, and Preview Mode in Dry.'
+cover: '../../assets/blog/mitra-for-miraie/cover.jpg'
+coverAlt: 'The Mitra panel open under the macOS menu bar in Auto mode, purple air flowing from the drawn AC, set in a gold frame on oxblood with a lotus outline behind it.'
 ---
 
 My Panasonic AC is a perfectly good machine with a slightly maddening remote. Want Dry mode? Press the mode button. Auto. Press again. Cool. Again. Dry, finally. Fan speed works the same way, and so does the air direction. The MirAIe app on my phone copies the remote faithfully, which is exactly the problem: the mode is a single button you tap over and over, stepping through every option until you land on the one you wanted.
