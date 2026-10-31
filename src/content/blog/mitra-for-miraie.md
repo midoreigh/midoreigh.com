@@ -1,19 +1,19 @@
 ---
 title: 'Mitra: Every Setting on My AC, One Tap Away'
-description: 'Why I built Mitra for MirAIe, a free, open-source menu bar and Android app that lays out every mode, fan speed and air direction of a Panasonic AC at once, and draws the air while it flows.'
+description: 'Why I built Mitra for MirAIe, a free, open-source menu bar and Android app that lays out every mode, fan speed and air direction of a Panasonic AC at once, draws the air while it flows, and adds timers and sleep profiles.'
 pubDate: 2026-10-31
 category: tech
 tags: ['mitra', 'miraie', 'macos', 'android', 'open source', 'smart home']
 featured: true
 cover: '../../assets/blog/mitra-for-miraie/cover.jpg'
-coverAlt: 'The Mitra panel open under the macOS menu bar in Auto mode, purple air flowing from the drawn AC, set in a gold frame on oxblood with a lotus outline behind it.'
+coverAlt: 'The Mitra app icon beside the Mitra panel open under the macOS menu bar in Cool mode, blue air flowing from the drawn AC and Timer and Sleep buttons below, set in a gold frame on oxblood with a lotus outline behind it.'
 ---
 
 My Panasonic AC is a perfectly good machine with a slightly maddening remote. Want Dry mode? Press the mode button. Auto. Press again. Cool. Again. Dry, finally. Fan speed works the same way, and so does the air direction. The MirAIe app on my phone copies the remote faithfully, which is exactly the problem: the mode is a single button you tap over and over, stepping through every option until you land on the one you wanted.
 
 So I built **Mitra for MirAIe**. *Mitra* means friend, and that's the job: a small app that sits in my Mac's menu bar and on my Android phone and puts every setting in front of me at once. Any mode, any fan speed, any louver position, one click or tap away.
 
-<p><video src="/media/mitra-demo.mp4" poster="/media/mitra-demo-poster.jpg" width="1600" height="1120" autoplay muted loop playsinline controls preload="metadata" aria-label="Mitra's panel under the macOS menu bar: switching modes and fan speeds with one click while the drawn AC's air changes colour, speed and direction"></video></p>
+<p><video src="/media/mitra-demo.mp4" poster="/media/mitra-demo-poster.jpg" width="1578" height="1260" autoplay muted loop playsinline controls preload="metadata" aria-label="Mitra opening from the macOS menu bar: the drawn AC switches on, then Heat and Cool, fan speeds and louver positions are each picked with one click while the air changes colour, speed and direction"></video></p>
 
 *Mitra in action: one click per setting, and the air follows.*
 
@@ -21,35 +21,59 @@ So I built **Mitra for MirAIe**. *Mitra* means friend, and that's the job: a sma
 
 The idea is simple: instead of a button that cycles, show the whole list. Auto, Cool, Dry and Fan (and Heat, on units that have it) sit side by side. Fan speed is Auto, Quiet, Low, Medium and High, named exactly as the MirAIe app names them. Both louvers get swing plus five fixed positions each. Temperature runs 16 to 30 °C with a plain minus and plus, and the room temperature the AC measures sits beside it.
 
-![Three views of the panel: Cool mode with every setting one click away, the panel open under the menu bar in Auto mode, and Preview Mode in Dry](../../assets/blog/mitra-for-miraie/panel.png)
+![Three views of the Mac panel: Cool mode with every setting one click away, the panel open under the menu bar, and a sleep profile running, shown under the AC and on the Sleep button](../../assets/blog/mitra-for-miraie/panel.png)
 
-*The Mac panel: every mode, fan speed and louver position laid out at once.*
+*The Mac panel: every mode, fan speed and louver position laid out at once, with Timer and Sleep underneath.*
 
-Then there are the extras the remote hides behind long-presses: Eco, Powerful, the Converti7 cooling levels, nanoe X, and the display light, whose button now glows a warm, incandescent amber when it's on, like a lit bulb.
+Then there are the extras the remote hides behind long-presses: Eco, Powerful, the Converti7 cooling levels, nanoe X, and the display light, whose button glows a warm, incandescent amber when it's on, like a lit bulb.
 
 Mitra only shows what your unit actually has. Heat and nanoe X appear when the AC reports them, and you can switch individual features on or off for each AC in Settings, so the panel never offers a button that does nothing.
 
-![Choosing a Converti7 cooling level, and the Settings window where you pick the features your AC has](../../assets/blog/mitra-for-miraie/converti-settings.png)
+![Mac Settings: the features your AC has, and Siri and widgets](../../assets/blog/mitra-for-miraie/settings.png)
 
-*Converti7 levels, and per-AC Settings for the features your unit really has.*
+*Settings, in tabs: pick the features your unit really has.*
 
 ## Draw the air
 
-The part I enjoyed most is the drawing. Mitra renders your unit and the air coming out of it the way it really behaves. The flap tilts to the louver position you picked. On swing, the air sweeps up and down and side to side at the unit's own pace. It takes on the colour of the mode, drifts lazily on Quiet and rushes on High. A small light on the drawn unit tells you whether the AC is online; when it isn't, the whole panel goes idle, shows its red light, and says what to check.
+The part I enjoyed most is the drawing. Mitra renders your unit and the air coming out of it the way it really behaves. The flap tilts to the louver position you picked. On swing, the air sweeps up and down and side to side at the unit's own pace. It takes on the colour of the mode, drifts lazily on Quiet and rushes on High. Switch mode or speed and the change starts at the outlet: new air comes out in the new colour while the old air carries on across the room.
+
+Power gets the same care. Turn the AC on and the drawn unit wakes the way the real one does: the flap swings open, the fan spins up and the air gathers from the outlet while the display glows on. Turn it off and the air slows and fades before the flap closes. A small light on the unit tells you whether the AC is online; if it can't be reached, or has lost power altogether, the whole panel goes idle, shows its red light, and says what to check.
 
 It turns a control panel into something closer to a window: a glance tells you what the AC is doing, not just what you last asked it to do.
+
+## Timers and sleep
+
+One-tap control is why Mitra exists, but the feature I lean on most at night is one you won't find in other apps for these ACs: **timers and sleep profiles**.
+
+Click **Timer** to have the AC turn off or on at a set time, or pick 30 minutes to 4 hours from now. **Sleep** runs a profile with a temperature for each hour of the night, and can turn the AC off at the end. Gentle, the AC's own profile, is always there: your temperature for three hours, then a degree warmer, then two. You can draw your own in Settings by dragging a bar for each hour.
+
+The AC keeps its timers and profiles itself, so they carry on while your Mac sleeps or your phone is off. Whatever is coming shows under the drawn unit, such as "Off at 9:20 PM" or "Night · hour 2 of 4".
+
+![Timers and sleep on the Mac: the Timer popover with Turn off and Turn on, the Sleep popover with Gentle and your own profiles, and the editor where you set a temperature for each hour](../../assets/blog/mitra-for-miraie/timers-sleep.png)
+
+*Timers, sleep profiles, and a temperature for each hour of your own nights.*
 
 ## Always within reach
 
 On the Mac, the set temperature sits right next to the menu bar icon. One click opens the panel. Siri works too ("Turn on the AC in Mitra for MirAIe") and every action is available in Shortcuts, so the AC can switch itself on before I get home.
 
-On Android the AC fills the screen, with every control on a glass panel at the bottom, within thumb reach. There's a home-screen widget, a Quick Settings tile for power, and AC on, AC off, Cooler and Warmer when you long-press the app icon, so most days I never open the app at all.
+On Android the AC fills the screen, with every control on a glass panel at the bottom, within thumb reach. Timers and sleep profiles work just as they do on the Mac, and Converti7's cooling levels open in a glass strip right above their button.
 
-![Three Android screens: Cool mode with every setting one tap away, Auto mode with purple air at Medium fan speed, and Preview Mode in Dry with the AC shown offline](../../assets/blog/mitra-for-miraie/android-panel.png)
+![Three Android screens: Cool mode with every setting one tap away, the Converti7 cooling levels in a strip above their button, and Preview Mode in Auto with a sleep profile and an off timer shown under the AC](../../assets/blog/mitra-for-miraie/android-panel.png)
 
 *On Android, the same living AC with the controls under your thumb.*
 
+Most days I don't open the app at all. There's a home-screen widget with power and temperature, a Quick Settings tile for power, and AC on, AC off, Cooler and Warmer when you long-press the app icon.
+
+![Mitra on the Android home screen: the widget with power, temperature and minus and plus, the app shortcuts for AC on, AC off, Cooler and Warmer, and the AC tile in Quick Settings](../../assets/blog/mitra-for-miraie/android-widget-tile-shortcuts.png)
+
+*The widget, the app shortcuts and the Quick Settings tile.*
+
 And it stays honest. Change something with the remote or the MirAIe app and Mitra follows straight away. Commands update the panel instantly, and the AC's own status reports confirm them a second or two later.
+
+## A new icon
+
+Mitra also has a new icon: the drawn AC with its air in every mode's colour, Heat orange, Auto violet, Cool blue, Dry teal and Fan silver. It's the same idea as the app, every option at once, in a single picture.
 
 ## How it talks to the AC
 
@@ -65,8 +89,8 @@ Mitra is free and MIT-licensed, and the whole source is on GitHub. That freedom 
 
 ## Get it
 
-- **Mac:** the [latest release](https://github.com/midoreigh/mitra-for-miraie/releases/latest), for macOS 26 or later on Apple silicon or Intel.
-- **Android:** the [1.0.0 release candidate](https://github.com/midoreigh/mitra-for-miraie/releases/tag/android-v1.0.0-rc.1), for Android 8.0 or later.
+- **Mac:** [Mitra for Mac 1.5.1](https://github.com/midoreigh/mitra-for-miraie/releases/latest), for macOS 26 or later on Apple silicon or Intel. It checks for updates itself.
+- **Android:** [Mitra for Android 1.0.2](https://github.com/midoreigh/mitra-for-miraie/releases/tag/android-v1.0.2), for Android 8.0 or later.
 - **Source, install guide and FAQ:** [github.com/midoreigh/mitra-for-miraie](https://github.com/midoreigh/mitra-for-miraie).
 
-It works with Panasonic ACs you control through the MirAIe app. Mitra is an independent, unofficial project, not affiliated with or endorsed by Panasonic; MirAIe is Panasonic's trademark. If you try it, and especially if you try the Android release candidate, I'd love to hear what you think.
+It works with Panasonic ACs you control through the MirAIe app. Mitra is an independent, unofficial project, not affiliated with or endorsed by Panasonic; MirAIe is Panasonic's trademark. If you try it, I'd love to hear what you think.
