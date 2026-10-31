@@ -100,18 +100,20 @@ const jsonLd = [
     </section>
   )}
 
-  <section class="wrap contents" aria-labelledby="contents-title">
-    <div class="section-head">
-      <div>
-        <p class="kicker" data-reveal>In this issue</p>
-        <h2 id="contents-title" class="display h-section" data-reveal style="--d:1">Latest <em>dispatches</em></h2>
+  {latest.length > 0 && (
+    <section class="wrap contents" aria-labelledby="contents-title">
+      <div class="section-head">
+        <div>
+          <p class="kicker" data-reveal>In this issue</p>
+          <h2 id="contents-title" class="display h-section" data-reveal style="--d:1">Latest <em>dispatches</em></h2>
+        </div>
+        <a class="link" href="/blog" data-reveal style="--d:2">All essays →</a>
       </div>
-      <a class="link" href="/blog" data-reveal style="--d:2">All essays →</a>
-    </div>
-    <ol class="rows">
-      {latest.map((post, i) => <PostRow post={post} n={i} />)}
-    </ol>
-  </section>
+      <ol class="rows">
+        {latest.map((post, i) => <PostRow post={post} n={i} />)}
+      </ol>
+    </section>
+  )}
 
   <section class="sections" aria-labelledby="sections-title">
     <div class="wrap">
