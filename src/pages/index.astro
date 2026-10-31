@@ -10,6 +10,9 @@ import { SITE, CATEGORIES, getPosts, readingTime, formatDate } from '../lib/site
 const posts = await getPosts();
 const featured = posts.find((p) => p.data.featured) ?? posts[0];
 const latest = posts.filter((p) => p !== featured).slice(0, 6);
+// The cover frame is 4:5, so a wider image renders wider than the frame and is cropped; ask for enough pixels.
+const coverCrop = featured?.data.cover ? Math.max(1, featured.data.cover.width / featured.data.cover.height / (4 / 5)) : 1;
+const coverSizes = `(max-width: 820px) ${Math.ceil(100 * coverCrop)}vw, ${Math.ceil(40 * coverCrop)}vw`;
 const sections = (['geopolitics', 'tech', 'culture'] as const).map((k) => ({
   key: k,
   ...CATEGORIES[k],
@@ -80,7 +83,7 @@ const jsonLd = [
       <a class="cover-art" href={`/blog/${featured.id}`} tabindex="-1" aria-hidden="true" style={`--c:${CATEGORIES[featured.data.category].color}`} data-gilt-host>
         <Gilt class="cover-gilt" float tilt={6}>
           {featured.data.cover ? (
-            <Image class="fill-img" src={featured.data.cover} alt="" widths={[480, 800]} sizes="(max-width: 820px) 100vw, 40vw" loading="eager" />
+            <Image class="fill-img" src={featured.data.cover} alt="" widths={[480, 800, 1200, 1600, 2400]} sizes={coverSizes} loading="eager" />
           ) : (
             <div class="panel"><Emblem kind={featured.data.category} class="cover-emblem" /></div>
           )}
