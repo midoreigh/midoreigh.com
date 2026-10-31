@@ -1,9 +1,9 @@
 ---
 title: 'Mitra: Every Setting on My AC, One Tap Away'
-description: 'Why I built Mitra for MirAIe, a free, open-source menu bar and Android app that lays out every mode, fan speed and air direction of a Panasonic AC at once, draws the air while it flows, and adds timers and sleep profiles.'
+description: 'Why I built Mitra for MirAIe, a free, open-source alternative to the MirAIe app for the Mac menu bar and Android: every mode, fan speed and air direction of a Panasonic AC at once, the air drawn as it flows, plus timers and sleep profiles.'
 pubDate: 2026-10-31
 category: tech
-tags: ['mitra', 'miraie', 'macos', 'android', 'open source', 'smart home']
+tags: ['mitra', 'miraie', 'miraie alternative', 'panasonic', 'macos', 'android', 'open source', 'smart home']
 featured: true
 cover: '../../assets/blog/mitra-for-miraie/cover.jpg'
 coverAlt: 'The Mitra app icon beside the Mitra panel open under the macOS menu bar in Cool mode, blue air flowing from the drawn AC and Timer and Sleep buttons below, set in a gold frame on oxblood with a lotus outline behind it.'
@@ -11,7 +11,7 @@ coverAlt: 'The Mitra app icon beside the Mitra panel open under the macOS menu b
 
 My Panasonic AC is a perfectly good machine with a slightly maddening remote. Want Dry mode? Press the mode button. Auto. Press again. Cool. Again. Dry, finally. Fan speed works the same way, and so does the air direction. The MirAIe app on my phone copies the remote faithfully, which is exactly the problem: the mode is a single button you tap over and over, stepping through every option until you land on the one you wanted.
 
-So I built **Mitra for MirAIe**. *Mitra* means friend, and that's the job: a small app that sits in my Mac's menu bar and on my Android phone and puts every setting in front of me at once. Any mode, any fan speed, any louver position, one click or tap away.
+So I built **Mitra for MirAIe**, a free, open-source alternative to the MirAIe app. *Mitra* means friend, and that's the job: a small app that sits in my Mac's menu bar and on my Android phone and puts every setting in front of me at once. Any mode, any fan speed, any louver position, one click or tap away.
 
 <p><video src="/media/mitra-demo.mp4" poster="/media/mitra-demo-poster.jpg" width="1578" height="1260" autoplay muted loop playsinline controls preload="metadata" aria-label="Mitra opening from the macOS menu bar: the drawn AC switches on, then Heat and Cool, fan speeds and louver positions are each picked with one click while the air changes colour, speed and direction"></video></p>
 
@@ -57,7 +57,7 @@ The AC keeps its timers and profiles itself, so they carry on while your Mac sle
 
 ## Always within reach
 
-On the Mac, the set temperature sits right next to the menu bar icon. One click opens the panel. Siri works too ("Turn on the AC in Mitra for MirAIe") and every action is available in Shortcuts, so the AC can switch itself on before I get home.
+If you've looked for a way to control a MirAIe AC from your Mac, this is it. The set temperature sits right next to the menu bar icon. One click opens the panel. Siri works too ("Turn on the AC in Mitra for MirAIe") and every action is available in Shortcuts, so the AC can switch itself on before I get home.
 
 On Android the AC fills the screen, with every control on a glass panel at the bottom, within thumb reach. Timers and sleep profiles work just as they do on the Mac, and Converti7's cooling levels open in a glass strip right above their button.
 
