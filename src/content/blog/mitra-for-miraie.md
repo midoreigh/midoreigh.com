@@ -13,13 +13,17 @@ My Panasonic AC is a perfectly good machine with a slightly maddening remote. Wa
 
 So I built **Mitra for MirAIe**. *Mitra* means friend, and that's the job: a small app that sits in my Mac's menu bar and on my Android phone and puts every setting in front of me at once. Any mode, any fan speed, any louver position, one click or tap away.
 
-![Three views of the panel: Cool mode with every setting one click away, the panel open under the menu bar in Auto mode, and Preview Mode in Dry](../../assets/blog/mitra-for-miraie/panel.png)
+<p><video src="/media/mitra-demo.mp4" poster="/media/mitra-demo-poster.jpg" width="1600" height="1120" autoplay muted loop playsinline controls preload="metadata" aria-label="Mitra's panel under the macOS menu bar: switching modes and fan speeds with one click while the drawn AC's air changes colour, speed and direction"></video></p>
 
-*The Mac panel: every mode, fan speed and louver position laid out at once.*
+*Mitra in action: one click per setting, and the air follows.*
 
 ## Lay it all out
 
 The idea is simple: instead of a button that cycles, show the whole list. Auto, Cool, Dry and Fan (and Heat, on units that have it) sit side by side. Fan speed is Auto, Quiet, Low, Medium and High, named exactly as the MirAIe app names them. Both louvers get swing plus five fixed positions each. Temperature runs 16 to 30 °C with a plain minus and plus, and the room temperature the AC measures sits beside it.
+
+![Three views of the panel: Cool mode with every setting one click away, the panel open under the menu bar in Auto mode, and Preview Mode in Dry](../../assets/blog/mitra-for-miraie/panel.png)
+
+*The Mac panel: every mode, fan speed and louver position laid out at once.*
 
 Then there are the extras the remote hides behind long-presses: Eco, Powerful, the Converti7 cooling levels, nanoe X, and the display light, whose button now glows a warm, incandescent amber when it's on, like a lit bulb.
 
