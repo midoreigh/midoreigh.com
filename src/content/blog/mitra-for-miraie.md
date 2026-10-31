@@ -94,6 +94,7 @@ Mitra is free and MIT-licensed, and the whole source is on GitHub. That freedom 
 ## Get it
 
 - **Website:** [mitra.midoreigh.com](https://mitra.midoreigh.com), the tour and downloads in one place.
+- **Web app:** [mitra.midoreigh.com/app](https://mitra.midoreigh.com/app), to control your AC from any browser.
 - **Mac:** [Mitra for Mac 1.5.1](https://github.com/midoreigh/mitra-for-miraie/releases/latest), for macOS 26 or later on Apple silicon or Intel. It checks for updates itself.
 - **Android:** [Mitra for Android 1.0.2](https://github.com/midoreigh/mitra-for-miraie/releases/tag/android-v1.0.2), for Android 8.0 or later.
 - **Source, install guide and FAQ:** [github.com/midoreigh/mitra-for-miraie](https://github.com/midoreigh/mitra-for-miraie).
